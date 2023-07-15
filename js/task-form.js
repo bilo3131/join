@@ -1,6 +1,5 @@
 'use strict';
 
-
 /**
  * Initial function that gets executed after the document is loaded.
  */
@@ -9,7 +8,6 @@ function initTask() {
     renderAssignees();
     setMinTaskDate();
 }
-
 
 /**
  * Adds click event listeners to all listed elements
@@ -27,7 +25,6 @@ function buttonEventListener() {
     subtaskBtn.addEventListener('click', addSubtaskToTask);
 }
 
-
 /**
  * Sets the min date for the datepicker.
  */
@@ -36,7 +33,6 @@ function setMinTaskDate() {
 
     date.min = getCurrentFormattedDate();
 }
-
 
 /**
  * Return the current date in the yyyy-mm-dd format.
@@ -52,7 +48,6 @@ function getCurrentFormattedDate() {
 
     return `${year}-${monthTwoDigit}-${dayTwoDigit}`;
 }
-
 
 /**
  * Adds and stores the new task to the database.
@@ -70,7 +65,13 @@ function addTask() {
     const assigneeInp = document.querySelectorAll('.assignee input[type="checkbox"]:checked');
     assigneeInp.forEach(assignee => assignees.push(assignee.value));
     const subtasks = getSubtasks();
+    setTasks(id, titleInp, descriptionInp, categoryInp, assignees, dateInp, priority, createdWithStatus, subtasks);
+}
 
+/**
+ * Set tasks on the webpage
+ */
+function setTasks(id, titleInp, descriptionInp, categoryInp, assignees, dateInp, priority, createdWithStatus, subtasks) {
     if (isInputValid(assignees)) {
         const task = {
             id: id,
@@ -83,11 +84,9 @@ function addTask() {
             status: createdWithStatus,
             subtasks: subtasks
         }
-
         storeTasks(task);
     }
 }
-
 
 /**
  * Gets all subtask that have been added to the form.
@@ -109,7 +108,6 @@ function getSubtasks() {
     return subtaskArr;
 }
 
-
 /**
  * Validates the user input.
  * @param {array} assignees Array of assignees.
@@ -122,15 +120,13 @@ function isInputValid(assignees) {
     const assigneeCheck = document.getElementById('assignee-check');
     const isInputValid = titleInp.checkValidity() && categoryInp.checkValidity() && dateInp.checkValidity() && assignees.length > 0;
     assigneeCheck.checked = false;
-
     if (assignees.length === 0) {
-        assigneeCheck.reportValidity()
+        assigneeCheck.reportValidity();
     } else {
         assigneeCheck.checked = true;
     }
     return isInputValid;
 }
-
 
 /**
  * Clears the input fields of the form.
@@ -156,18 +152,16 @@ function clearInputFields() {
     }
 }
 
-
 /**
  * Stores the task in the database and clears the input fields.
  * @param {object} task Task object.
  */
 async function storeTasks(task) {
     tasks.push(task);
-    await storeItem('tasks', tasks);
+    await setItem('tasks', tasks);
     clearInputFields();
-    window.location.pathname = '/join/board.html';
+    window.location.pathname = '/board.html';
 }
-
 
 /**
  * Toggles the custom dropdown menu for the assignees.
@@ -179,7 +173,6 @@ function toggleDropdown() {
     assigneeBackground.classList.toggle('d-none');
     assigneeContainer.classList.toggle('d-none');
 }
-
 
 /**
  * Renders the assignees (all available contacts) into the dropdown selection.
@@ -193,24 +186,27 @@ function renderAssignees() {
     });
 }
 
-
 /**
  * Renders the assignees bubbles of the selected assignees.
- * @returns undefined
  */
 function renderAssigneesBubbles() {
     const assigneeBubblesEl = document.getElementById('assignee-bubbles');
     const selectedAssignees = document.querySelectorAll('#assignee-container input[type="checkbox"]:checked');
     let assigneesHTML = '';
     assigneeBubblesEl.innerHTML = '';
+    runThroughAssigneesBubbles(assigneeBubblesEl, selectedAssignees, assigneesHTML);
+}
 
+/**
+ * @returns undefined
+ */
+function runThroughAssigneesBubbles(assigneeBubblesEl, selectedAssignees, assigneesHTML) {
     for (let i = 0; i < selectedAssignees.length; i++) {
         const contact = contacts.find(contact => contact.id === selectedAssignees[i].id);
         const firstnameChar = contact.firstname.charAt(0).toUpperCase();
         const lastnameChar = contact.lastname.charAt(0).toUpperCase();
         const initials = `${firstnameChar}${lastnameChar}`;
         const assigneeOffset = i * 12;
-
         if (i == 10) {
             assigneesHTML += assigneeHTMLTemp(`+${selectedAssignees.length - i}`, contact.color, assigneeOffset);
             assigneeBubblesEl.innerHTML = assigneesHTML;
@@ -221,7 +217,6 @@ function renderAssigneesBubbles() {
         }
     }
 }
-
 
 /**
  * Adds a subtask to the task form.
@@ -238,7 +233,6 @@ function addSubtaskToTask() {
     }
 }
 
-
 /**
  * Renders the subtasks.
  * @param {object} task Task object.
@@ -254,7 +248,6 @@ function renderSubtasks(task) {
     return subtasksHTML
 }
 
-
 /**
  * Deletes the subtask from the task form.
  * @param {string} id Id of the subtask.
@@ -264,7 +257,6 @@ function deleteSubtaskFromTask(id) {
 
     subtaskEl.remove();
 }
-
 
 /**
  * HTML template for rendering the assignee.
@@ -279,7 +271,6 @@ function assigneeTemp(contact) {
         </label>`;
 }
 
-
 /**
  * Return the HTML template for the assignees bubble.
  * @param {string} initials Initials of the contact.
@@ -293,14 +284,13 @@ function assigneeHTMLTemp(initials, color, offset) {
     `);
 }
 
-
 /**
  * Returns the HTML template for the subtask.
  * @param {string} subtaskText Text of the subtask.
  * @param {string} id Id of the subtask.
  * @returns  HTML subtask template.
  */
-function subtaskHTMLTemp(taskId, subtaskText, id, isChecked=false) {
+function subtaskHTMLTemp(taskId, subtaskText, id, isChecked = false) {
     return (`
         <div class="d-flex subtask-item" id="subtask-item-${id}" data-id="${id}">
             <label for="${id}" class="subtask">${subtaskText}
@@ -312,13 +302,14 @@ function subtaskHTMLTemp(taskId, subtaskText, id, isChecked=false) {
 }
 
 
+
 /**
  * Returns the HTML template for the subtask.
  * @param {string} subtaskText Text of the subtask.
  * @param {string} id Id of the subtask.
  * @returns  HTML subtask template.
  */
-function subtaskEditHTMLTemp(subtaskText, id, isChecked=false) {
+function subtaskEditHTMLTemp(subtaskText, id, isChecked = false) {
     return (`
         <div class="d-flex subtask-item" id="subtask-item-${id}" data-id="${id}">
             <label for="${id}" class="subtask">${subtaskText}

@@ -17,7 +17,6 @@ function taskColHeaderTemp(title, id) {
     `);
 }
 
-
 /**
  * Returns the HTML template for the board item.
  * @param {object} task Task object.
@@ -43,7 +42,6 @@ function taskItemHTMLTemp(task, assignees, progress) {
     `);
 }
 
-
 /**
  * Return the HTML template for the board item assignee.
  * @param {string} initials Initials of the contact.
@@ -56,7 +54,6 @@ function assigneeHTMLTemp(initials, color, offset) {
         <div class="assignee-task" style="right:${offset}px; background: hsl(${color}, 100%, 30%)">${initials}</div>
     `);
 }
-
 
 /**
  * Returns the HTML template for the item modal.
@@ -95,7 +92,6 @@ function modalItemHTMLTemp(task, assignees, subtasks) {
     `);
 }
 
-
 /**
  * Returns the HTML template for the assignee dropdown.
  * @param {string} initials Initials of the contact.
@@ -110,7 +106,6 @@ function modalAssigneHTMLTemp(initials, contact) {
         </div>
     `);
 }
-
 
 /**
  * Returns the HTML template for the subtask progress.

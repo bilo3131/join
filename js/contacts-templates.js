@@ -9,7 +9,7 @@
  */
 function contactTemp({ firstname, lastname, email, color, id }, initials) {
     return (`
-        <div class="contact" onclick="showContactDetails('${id}')">
+        <div class="contact" onclick="setContactDetails('${id}')">
             <div class="contact-bubble" style="background: hsl(${color}, 100%, 30%);">
                 <p class="contact-initials txt-h7">${initials}</p>
             </div>

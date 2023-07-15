@@ -1,19 +1,21 @@
-'use strict';
-
-
-let contacts = [];
-
-
 /**
  * Initial function that gets executed after the document is loaded.
  */
 async function init() {
-    await downloadFromServer();
-    contacts = await loadItem('contacts');
-    buttonEventListener();
-    renderContactList();
+    try {
+        const contactsString = await getItem('contacts');
+        const correctedContactsString = contactsString.replace(/\'/g, '\"');
+        if (correctedContactsString) {
+            contacts = JSON.parse(correctedContactsString);
+        } else {
+            contacts = [];
+        }
+        buttonEventListener();
+        renderContactList();
+    } catch (error) {
+        console.error('initialization error: No contacts saved!');
+    }
 }
-
 
 /**
  * Adds click event listeners to all listed elements
@@ -26,7 +28,6 @@ function buttonEventListener() {
     newContactBtn?.addEventListener('click', () => addContactEventListener());
     closeModalBtn?.addEventListener('click', () => modal?.close());
 }
-
 
 /**
  * Event listener to set the correct data for the modal when creating a new contact.
@@ -43,7 +44,6 @@ function addContactEventListener() {
     modal?.showModal();
 }
 
-
 /**
  * Adds a contact to the contact list with the data from the modal input fields. 
  */
@@ -59,7 +59,6 @@ function addContact() {
     }
 }
 
-
 /**
  * Creates a contact from the given data.
  * @param {HTMLElement} firstnameInp Contact firstname.
@@ -70,7 +69,6 @@ function addContact() {
 function createContact(firstnameInp, lastnameInp, emailInp, phoneInp) {
     const id = Date.now().toString(36);
     const color = Math.floor(Math.random() * 355);
-
     const contact = {
         id: id,
         firstname: firstnameInp?.value.trim(),
@@ -79,11 +77,9 @@ function createContact(firstnameInp, lastnameInp, emailInp, phoneInp) {
         phone: phoneInp?.value.trim(),
         color: color
     }
-
     contacts.push(contact);
     return contact;
 }
-
 
 /**
  * Event listener to set the correct data for the modal when editing an existing contact.
@@ -102,7 +98,6 @@ function editContactEventListener(id) {
     modal?.showModal();
 }
 
-
 /**
  * Updates the contact from the contact list with the given data from the modal input fields. 
  * @param {string} id Unique id of the contact.
@@ -113,17 +108,14 @@ function editContact(id) {
     const emailInp = document.getElementById('new-email');
     const phoneInp = document.getElementById('new-phone');
     const contact = contacts.find(contact => contact.id === id);
-
     if (firstnameInp.checkValidity() && lastnameInp.checkValidity() && emailInp.checkValidity() && phoneInp.checkValidity()) {
         contact.firstname = firstnameInp.value;
         contact.lastname = lastnameInp.value;
         contact.email = emailInp.value;
         contact.phone = phoneInp.value;
-
         storeContact(id, 'Succesfully saved!');
     }
 }
-
 
 /**
  * Deletes the contact from the contact list. 
@@ -133,19 +125,16 @@ function deleteContact(id) {
     const contactDetailsEl = document.getElementById('contact-details-body');
     const contact = contacts.find(contact => contact.id === id);
     const index = contacts.indexOf(contact);
-
     contacts.splice(index, 1);
     contactDetailsEl.classList.add('d-none');
-    storeItem('contacts', contacts);
+    setItem('contacts', contacts);
     renderContactList();
     notify('Succesfully deleted!');
     if (window.matchMedia("(max-width: 576px)")) {
         const contactDetails = document.getElementById('contact-details');
-
         contactDetails.style.display = 'none';
     }
 }
-
 
 /**
  * Stores the sorted contact list and renders the updated contacts.
@@ -154,18 +143,17 @@ function deleteContact(id) {
  */
 function storeContact(id, text = null) {
     sortContacts();
-    storeItem('contacts', contacts);
+    setItem('contacts', contacts);
     renderContactList();
-    showContactDetails(id);
+    setContactDetails(id);
     text ? notify(text) : notify();;
 }
-
 
 /**
  * Shows the details of the contact.
  * @param {string} id Unique id of the contact.
  */
-function showContactDetails(id) {
+function setContactDetails(id) {
     const contactDetailsEl = document.getElementById('contact-details-body');
     const bubbleEl = document.getElementById('contact-details-bubble');
     const initialsEl = document.getElementById('contact-details-initials');
@@ -175,7 +163,13 @@ function showContactDetails(id) {
     const editBtn = document.getElementById('edit-contact');
     const deleteBtn = document.getElementById('delete-contact');
     const contact = contacts.find(contact => contact.id === id);
+    showContactDetails(id, contactDetailsEl, bubbleEl, initialsEl, nameEl, emailEl, phoneEl, editBtn, deleteBtn, contact);
+    if (window.matchMedia("(max-width: 576px)")) {
+        hideDetailsOnMobileButton();
+    }
+}
 
+function showContactDetails(id, contactDetailsEl, bubbleEl, initialsEl, nameEl, emailEl, phoneEl, editBtn, deleteBtn, contact) {
     contactDetailsEl.style.display = 'flex';
     bubbleEl.style = `background: hsl(${contact.color}, 100%, 30%)`;
     initialsEl.innerHTML = `${contact.firstname.charAt(0).toUpperCase()}${contact.lastname.charAt(0).toUpperCase()}`
@@ -186,11 +180,7 @@ function showContactDetails(id) {
     phoneEl.href = `tel:${contact.phone}`;
     editBtn.onclick = () => editContactEventListener(id);
     deleteBtn.onclick = () => deleteContact(id);
-    if (window.matchMedia("(max-width: 576px)")) {
-        hideDetailsOnMobileButton();
-    }
 }
-
 
 /**
  * Shows the hide details button on mobile view.
@@ -204,7 +194,6 @@ function hideDetailsOnMobileButton() {
         contactDetails.style.display = 'none';
     })
 }
-
 
 /**
  * Clears the input fields of the modal.
@@ -220,7 +209,6 @@ function clearInputFields() {
     emailInp.value = '';
     phoneInp.value = '';
 }
-
 
 /**
  * Prefills the input fields of the modal if the contact gets edited.
@@ -238,7 +226,6 @@ function prefillInputFields(contact) {
     phoneInp.value = contact.phone;
 }
 
-
 /**
  * Sorts the contact list by lastname.
  */
@@ -249,7 +236,6 @@ function sortContacts() {
     });
 }
 
-
 /**
  * Renders the complete contact list including contact seperators.
  */
@@ -257,11 +243,9 @@ function renderContactList() {
     const contactListEl = document.getElementById('contact-list')
     let contactList = '';
     let char = '';
-
     for (let contact of contacts) {
-        const lastnameChar = contact.lastname.toUpperCase().charAt(0);
+        const lastnameChar = contact.lastname.charAt(0).toUpperCase();
         const initials = `${contact.firstname.charAt(0).toUpperCase()}${contact.lastname.charAt(0).toUpperCase()}`;
-
         if (lastnameChar != char) {
             char = lastnameChar;
             contactList += contactSeparatorTemp(lastnameChar);
@@ -270,6 +254,5 @@ function renderContactList() {
     }
     contactListEl.innerHTML = contactList;
 }
-
 
 init();

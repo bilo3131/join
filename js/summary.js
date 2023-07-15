@@ -1,20 +1,22 @@
-'user strict';
-
-
-let tasks = [];
-
-
 /**
  * Initial function that gets executed after the document has loaded.
 */
 async function init() {
-    await downloadFromServer();
-    tasks = await loadItem('tasks');
-    setTaskNumbers();
-    setUrgentTasks();
-    addTaskEventListener();
+    try {
+        const tasksString = await getItem('tasks');
+        const correctedTasksString = tasksString.replace(/\'/g, '\"');
+        if (correctedTasksString) {
+            tasks = JSON.parse(correctedTasksString);
+        } else {
+            tasks = [];
+        }
+        setTaskNumbers();
+        setUrgentTasks();
+        addTaskEventListener();
+    } catch (error) {
+        console.error(error);
+    }
 }
-
 
 /**
  * Sets event listener to redirect to the board when you click on a box.
@@ -25,7 +27,6 @@ function addTaskEventListener() {
         box.addEventListener('click', () => window.location.href = './board.html');
     });
 }
-
 
 /**
  * Sets the number of the display element for the corresponding task type.
@@ -45,7 +46,6 @@ function setTaskNumbers() {
     doneEl.innerHTML = numTasks.done;
 }
 
-
 /**
  * Counts the tasks for each task status.
  * @returns Object with counted tasks.
@@ -57,7 +57,15 @@ function countTasks() {
         awaiting: 0,
         done: 0
     }
+    setValue(numTasks);
+    return numTasks;
+}
 
+/**
+ * Count tasks, which are saved in the respective category.
+ * @param {JSON} numTasks Counter for tasks.
+ */
+function setValue(numTasks) {
     tasks.forEach(task => {
         switch (task.status) {
             case 'todo':
@@ -74,10 +82,7 @@ function countTasks() {
                 break;
         }
     });
-
-    return numTasks;
 }
-
 
 /**
  * Sets the number and date of the display element for the urgent tasks.
@@ -86,7 +91,7 @@ function setUrgentTasks() {
     const urgentEl = document.getElementById('urgent');
     const urgentDateEl = document.getElementById('urgent-date');
     const urgentTasks = getUrgentTasks();
-    
+
     urgentEl.innerHTML = urgentTasks.length;
 
     if (urgentTasks.length > 0) {
@@ -94,7 +99,6 @@ function setUrgentTasks() {
         urgentDateEl.innerHTML = formatDate(upcomingDeadline);
     }
 }
-
 
 /**
  * Returns an array of the filtered urgent tasks.
@@ -104,7 +108,6 @@ function getUrgentTasks() {
     return tasks.filter(task => task.priority === 'urgent');
 }
 
-
 /**
  * Sorts the urgent task by date and returns the date of the most urgent task.
  * @param {Array} urgentTasks Array of urgent tasks.
@@ -113,6 +116,5 @@ function getUrgentTasks() {
 function getUpcomingDeadline(urgentTasks) {
     return urgentTasks.sort((taskA, taskB) => taskA.date.localeCompare(taskB.date))[0].date;
 }
-
 
 init();

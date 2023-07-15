@@ -8,7 +8,6 @@ function addSeachBarEventListener() {
     });
 }
 
-
 /**
  * Adds the click event to the add task button.
  */
@@ -18,7 +17,6 @@ function addNewTaskButtonEventListener() {
 
     newTaskBtn.addEventListener('click', () => openAddTaskModal('todo', modalAddTask));
 }
-
 
 /**
  * Adds the click event to every add task button in the colums of the board.
@@ -38,7 +36,6 @@ function addNewTaskEventListener() {
     modalTaskClose.addEventListener('click', () => closeAddTaskModal(modalAddTask));
 }
 
-
 /**
  * Shows the add task modal and sets a data property with the desired status.
  * @param {string} status Status of the task.
@@ -52,7 +49,6 @@ function openAddTaskModal(status, modal) {
     modal.dataset.status = status;
 }
 
-
 /**
  * Closes the modal and clears the input fields.
  * @param {HTMLElement} modal Add task modal.
@@ -60,7 +56,6 @@ function openAddTaskModal(status, modal) {
 function closeAddTaskModal(modal) {
     modal.close()
 }
-
 
 /**
  * Adds the click event listener to close the modal.

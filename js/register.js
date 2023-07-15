@@ -1,5 +1,3 @@
-let users = [];
-
 /**
  * Function to initial the 'Register' section
  */

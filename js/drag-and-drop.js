@@ -46,7 +46,6 @@ function itemClickEvent(item) {
     const task = tasks.find(task => task.id === item.dataset.id);
     const subtasks = renderSubtasks(task);
     let assignees = '';
-
     task.assignees.forEach(assignee => {
         const contact = contacts.find(contact => contact.id === assignee);
         const firstnameChar = contact.firstname.charAt(0).toUpperCase();
@@ -54,7 +53,6 @@ function itemClickEvent(item) {
         const initials = `${firstnameChar}${lastnameChar}`;
         assignees += modalAssigneHTMLTemp(initials, contact);
     })
-
     modalContent.innerHTML = modalItemHTMLTemp(task, assignees, subtasks);
     modal.showModal()
 }
@@ -97,11 +95,9 @@ function containerDragOverEvent(event, container) {
  */
 function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll('.task-item:not(.dragging')];
-
     return draggableElements.reduce((closest, child) => {
         const box = child.getBoundingClientRect();
         const offset = y - box.top - box.height / 2;
-
         if (offset < 0 && offset > closest.offset) {
             return {
                 offset: offset,

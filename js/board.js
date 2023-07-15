@@ -1,28 +1,41 @@
-'use strict';
-
-
-let contacts = [];
-let tasks = [];
-
-
 /**
  * Initial function that gets executed after the document is loaded.
  */
 async function init() {
-    await downloadFromServer();
-    contacts = await loadItem('contacts');
-    tasks = await loadItem('tasks');
-    renderTaskItems(tasks);
-    addSeachBarEventListener();
-    addNewTaskButtonEventListener();
-    addModalCloseEventListener();
-    initTask();
+    try {
+        const tasksString = await getItem('tasks');
+        const contactsString = await getItem('contacts');
+        const correctedTasksString = tasksString.replace(/\'/g, '\"');
+        const correctedContactsString = contactsString.replace(/\'/g, '\"');
+        await parseItems(correctedTasksString, correctedContactsString);
+        renderTaskItems(tasks);
+        addSeachBarEventListener();
+        addNewTaskButtonEventListener();
+        addModalCloseEventListener();
+        initTask();
+    } catch (error) {
+        console.error('initialization error: No tasks saved!', error);
+    }
 }
 
+/**
+ * To parse the loaded elements.
+ * @param {String} correctedTasksString To parse tasks.
+ * @param {String} correctedContactsString To parse contacts.
+ */
+async function parseItems(correctedTasksString, correctedContactsString) {
+    if (correctedTasksString || correctedContactsString) {
+        tasks = JSON.parse(correctedTasksString);
+        contacts = JSON.parse(correctedContactsString);
+    } else {
+        tasks = [];
+        contacts = [];
+    }
+}
 
 /**
  * Filters the tasks array with the given promt and return a new array that contains the filtered tasks.
- * @param {string} searchBarInp Search input.
+ * @param {String} searchBarInp Search input.
  * @returns Filtered tasks array.
  */
 function filterTasks(searchBarInp) {
@@ -34,7 +47,6 @@ function filterTasks(searchBarInp) {
     return filteredTasks;
 }
 
-
 /**
  * Updates the task in the database.
  * @param {HTMLElement} item Board item.
@@ -43,9 +55,8 @@ async function updateItem(item) {
     const task = tasks.find(task => task.id === item.dataset.id);
 
     task.status = item.parentElement.dataset.category;
-    await storeItem('tasks', tasks);
+    await setItem('tasks', tasks);
 }
-
 
 /**
  * Renders the tasks in the correct board column.
@@ -56,9 +67,22 @@ function renderTaskItems(tasksArr) {
     const inProgressEl = document.getElementById('in-progress');
     const awaitingFeedbackEl = document.getElementById('awaiting-feedback');
     const doneEl = document.getElementById('done');
-
     clearElementsInnerHTML(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl);
+    setTaskStatus(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl, tasksArr)
+    addDragItemEventListener();
+    addDragContainerEventListener();
+    addNewTaskEventListener();
+}
 
+/**
+ * Set the status of the tasks
+ * @param {HTMLElement} toDoEl Connected HTML-Elements.
+ * @param {HTMLElement} inProgressEl Connected HTML-Elements.
+ * @param {HTMLElement} awaitingFeedbackEl Connected HTML-Elements.
+ * @param {HTMLElement} doneEl Connected HTML-Elements.
+ * @param {HTMLElement} tasksArr Connected HTML-Elements.
+ */
+function setTaskStatus(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl, tasksArr) {
     for (let task of tasksArr) {
         const assignees = renderTaskAssignees(task);
         const taskProgress = getTaskProgress(task);
@@ -79,12 +103,7 @@ function renderTaskItems(tasksArr) {
                 toDoEl.innerHTML += taskItemHTMLTemp(task, assignees, taskProgress);
         }
     }
-
-    addDragItemEventListener();
-    addDragContainerEventListener();
-    addNewTaskEventListener();
 }
-
 
 /**
  * Calculates the progress of the subtasks.
@@ -100,7 +119,6 @@ function getTaskProgress(task) {
     return subtaskProgressHTMLTemp(subtaskProgress, totalSubtasks, completedSubtasks);
 }
 
-
 /**
  * Clears the column elements and renders the headers.
  * @param {HTMLElement} toDoEl To do col element.
@@ -115,7 +133,6 @@ function clearElementsInnerHTML(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl
     doneEl.innerHTML = taskColHeaderTemp('Done', 'done-btn');
 }
 
-
 /**
  * Renders the assignees of the board object.
  * @param {object} task Task object.
@@ -127,12 +144,11 @@ function renderTaskAssignees(task) {
 
     for (let i = 0; i < assignees.length; i++) {
         const contact = contacts.find(contact => contact.id === assignees[i]);
+        if (!contact) { removeAssignee(task, assignees[i]); continue }
         const firstnameChar = contact.firstname.charAt(0).toUpperCase();
         const lastnameChar = contact.lastname.charAt(0).toUpperCase();
         const initials = `${firstnameChar}${lastnameChar}`;
         const assigneeOffset = i * 12;
-
-        if (!contact) { removeAssignee(task, assignees[i]); continue }
         if (i == 3) {
             assigneesHTML += assigneeHTMLTemp(`+${assignees.length - i}`, contact.color, assigneeOffset);
             return assigneesHTML;
@@ -143,7 +159,6 @@ function renderTaskAssignees(task) {
     return assigneesHTML;
 }
 
-
 /**
  * Removes the assignee from a task.
  * @param {object} task Task object.
@@ -152,9 +167,8 @@ function renderTaskAssignees(task) {
 async function removeAssignee(task, assignee) {
     const assigneeIndex = task.assignees.indexOf(assignee);
     task.assignees.splice(assigneeIndex, 1);
-    await storeItem('tasks', tasks);
+    await setItem('tasks', tasks);
 }
-
 
 /**
  * Edits the task with the given id and saves it to the database.
@@ -175,7 +189,6 @@ function openEditTaskModal(id) {
     taskForm.showModal();
 }
 
-
 /**
  * Uncheck all selected assignees.
  */
@@ -187,7 +200,6 @@ function uncheckAssignees() {
     })
 }
 
-
 /**
  * Clears the subtask board item container.
  */
@@ -197,7 +209,6 @@ function clearSubtaskItemContainer() {
     subtaskItemContainer.innerHTML = '';
 }
 
-
 /**
  * Renders the subtask to the edit modal.
  * @param {object} task Task object.
@@ -205,12 +216,10 @@ function clearSubtaskItemContainer() {
 function renderEditSubtasks(task) {
     let subtaskContainerEl = document.getElementById('subtask-container');
     subtaskContainerEl.innerHTML = '';
-    
     task.subtasks.forEach(subtask => {
         subtaskContainerEl.innerHTML += subtaskEditHTMLTemp(subtask.title, subtask.id, subtask.isChecked);
     })
 }
-
 
 /**
  * Updates the subtask in the database.
@@ -221,12 +230,10 @@ async function updateSubtasks(taskId, subtaskId) {
     const task = tasks.find(task => task.id === taskId);
     const subtask = task.subtasks.find(subtask => subtask.id === subtaskId);
     const subtaskIsChecked = document.getElementById(subtaskId).checked;
-
     subtask.isChecked = subtaskIsChecked;
-    storeItem('tasks', tasks);
+    setItem('tasks', tasks);
     renderTaskItems(tasks);
 }
-
 
 /**
  * Prefills the input field when a task gets edited.
@@ -238,7 +245,6 @@ function prefillTaskForm(task) {
     const categoryEl = document.getElementById('category');
     const dateEl = document.getElementById('date');
     const priority = document.getElementById(`${task.priority}`);
-
     titleEl.value = task.title;
     descriptionEl.value = task.description;
     categoryEl.value = task.category;
@@ -248,7 +254,6 @@ function prefillTaskForm(task) {
         document.getElementById(assignee).checked = true;
     })
 }
-
 
 /**
  * Adjusts the modal to the corresponding action.
@@ -266,7 +271,6 @@ function adjustModal(type, id) {
     type === 'add' ? addTaskBtn.removeEventListener('click', () => editTask(id)) : addTaskBtn.removeEventListener('click', addTask)
 }
 
-
 /**
  * Edits the task and stores it in the database.
  * @param {string} id Id of the task.
@@ -280,15 +284,14 @@ function editTask(id) {
     if (isInputValid(assignees)) {
         updateTask(id);
         taskForm.close();
-        storeItem('tasks', tasks);
+        setItem('tasks', tasks);
         renderTaskItems(tasks);
     }
 }
 
-
 /**
  * Updates the edited task in the local database.
- * @param {string} id Id of the task.
+ * @param {String} id Id of the task.
  */
 function updateTask(id) {
     let updatedTask = tasks.find(task => task.id === id);
@@ -301,7 +304,13 @@ function updateTask(id) {
     const assignees = [];
     const assigneeInp = document.querySelectorAll('.assignee input[type="checkbox"]:checked');
     assigneeInp.forEach(assignee => assignees.push(assignee.value));
+    setUpdatedTasks(id, updatedTask, titleInp, descriptionInp, categoryInp, assignees, dateInp, priority);
+}
 
+/**
+ * Set the updated tasks on the page.
+ */
+function setUpdatedTasks(id, updatedTask, titleInp, descriptionInp, categoryInp, assignees, dateInp, priority) {
     updatedTask.id = id;
     updatedTask.title = titleInp.value;
     updatedTask.description = descriptionInp.value;
@@ -313,7 +322,6 @@ function updateTask(id) {
     updatedTask.subtasks = getSubtasks();
 }
 
-
 /**
  * Deletes the task with the given id from the database.
  * @param {string} id Id of the task.
@@ -322,14 +330,12 @@ function deleteTask(id) {
     const modal = document.getElementById('modal');
     const delTask = tasks.find(task => task.id === id);
     const delTaskIndex = tasks.indexOf(delTask);
-
     tasks.splice(delTaskIndex, 1);
-    storeItem('tasks', tasks);
+    setItem('tasks', tasks);
     renderTaskItems(tasks);
     notify('Successfully deleted!');
     modal.close();
-}
-
+}  
 
 /**
  * Gets the color of the category element.
@@ -362,6 +368,5 @@ function getCategoryColor(task) {
             return '#80004f';
     }
 }
-
 
 init();
