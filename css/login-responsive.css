@@ -1,0 +1,194 @@
+@media screen and (max-width: 680px) {
+    main {
+        padding: 35px 80px;
+    }
+}
+
+@media screen and (max-width: 610px) {
+    main {
+        padding: 35px 40px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .mail-icon {
+        background: url(../assets/icons/mail.svg) no-repeat right 21px top 8px !important;
+    }
+
+    .lock-icon {
+        background: url(../assets/icons/lock.svg) no-repeat right 21px top 8px !important;
+    }
+
+    .user-icon {
+        background: url(../assets/icons/user.svg) no-repeat right 21px top 8px !important;
+    }
+}
+
+
+@media screen and (max-width: 526px){
+    .text-input {
+        max-width: 350px;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    body {
+        height: 100% !important;
+        animation: backgroundcolor 2s;
+    }
+
+    html {
+        overflow-y: scroll;
+    }
+
+    .msgBox {
+        position: absolute;
+        top: 210px;
+        right: 1vw;
+        left: 1vw;
+    }
+
+    .sign-up-section {
+        display: none;
+    }
+
+    .responsive {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        margin: 0;
+    }
+
+    .back {
+        left: 20px;
+        top: 20px;
+    }
+
+    .text {
+        padding: 0 5px;
+        font-size: var(--h6-font-size);
+    }
+
+    .buttons {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        gap: 20px;
+    }
+
+    .link {
+        margin-left: 0;
+    }
+
+    .line {
+        width: 25%;
+    }
+
+    main {
+        width: 100% !important;
+        padding: 35px 0 35px 0;
+    }
+
+    .text-input {
+        width: 100%;
+    }
+
+    .gap-40 {
+        gap: 20px;
+    }
+
+    .check {
+        flex-direction: column-reverse;
+        align-self: flex-start;
+    }
+
+    form {
+        align-items: flex-start;
+    }
+
+    .logo-responsive-animation {
+        animation: responsiveLight 2s;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .mail-icon {
+        background: url(../assets/icons/mail.svg) no-repeat right 21px top 8px !important;
+    }
+
+    .lock-icon {
+        background: url(../assets/icons/lock.svg) no-repeat right 21px top 8px !important;
+    }
+
+    .user-icon {
+        background: url(../assets/icons/user.svg) no-repeat right 21px top 8px !important;
+    }
+
+    @keyframes backgroundcolor {
+        0% {
+            background: var(--primary);
+        }
+
+        50% {
+            background: var(--primary);
+        }
+
+        100% {
+            background: var(--background);
+        }
+    }
+
+    @keyframes responsiveLight {
+        0% {
+            opacity: 100%;
+            transform: scale(3);
+            margin-left: 35vw;
+            margin-top: calc(50vh - 122px);
+        }
+
+        50% {
+            opacity: 100%;
+            transform: scale(3);
+            margin-left: 35vw;
+            margin-top: calc(50vh - 122px);
+        }
+
+        100% {
+            opacity: 0%;
+            transform: scale(1);
+            margin-left: 0;
+            margin-top: 0;
+        }
+    }
+
+    @keyframes image {
+        0% {
+            opacity: 0;
+            transform: scale(3);
+            margin-left: 35vw;
+            margin-top: calc(50vh - 122px);
+        }
+
+        50% {
+            opacity: 0;
+            transform: scale(3);
+            margin-left: 35vw;
+            margin-top: calc(50vh - 122px);
+        }
+
+        100% {
+            opacity: 100%;
+            transform: scale(1);
+            margin-left: 0;
+            margin-top: 0;
+        }
+    }
+}
+
+@media screen and (max-width: 375px) {
+    .text-input {
+        width: 250px;
+    }
+}

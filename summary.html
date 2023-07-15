@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Join | Summary</title>
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./css/header.css">
+    <link rel="stylesheet" href="./css/navigation.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/summary.css">
+    <script defer src="./smallest_backend_ever/mini_backend.js"></script>
+    <script defer src="./js/script.js"></script>
+    <script defer src="./js/summary.js"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <section template-html="./assets/templates/navigation.html"></section>
+
+    <section class="w-100">
+        <!-- Header -->
+        <header template-html="./assets/templates/header.html"></header>
+
+        <!-- Content -->
+        <div class="content">
+            <main class="summary">
+                <!-- Header -->
+                <div class="summary-header">
+                    <h1 class="txt-h1">Summary</h1>
+                    <div class="line"></div>
+                    <p class="txt-h5">Everything in a nutshell!</p>
+                </div>
+                <!-- Greeting -->
+                <div class="greeting">
+                    <h2 class="txt-h2">Good morning,</h2>
+                    <p class="greeting-name" id="greeting-name">Dennis Ammen</p>
+                </div>
+                <!-- Summary -->
+                <div class="grid">
+                    <div class="box box-small">
+                        <h2 class="txt-h2" id="tasks">0</h2>
+                        <p>Task&nbsp;in<br>Board</p>
+                    </div>
+                    <div class="box box-small">
+                        <h2 class="txt-h2" id="in-progress">0</h2>
+                        <p>Task in<br>Progress</p>
+                    </div>
+                    <div class="box box-small">
+                        <h2 class="txt-h2" id="awaiting">0</h2>
+                        <p>Awaiting<br>Feedback</p>
+                    </div>
+                    <div class="box box-large">
+                        <div class="d-flex gap-18">
+                            <img src="./assets/icons/urgent_circle.svg" alt="Urgent" draggable="false">
+                            <div class="d-flex-col">
+                                <h2 class="txt-h2" id="urgent">0</h2>
+                                <p>Urgent</p>
+                            </div>
+                        </div>
+                        <div class="line-gray"></div>
+                        <div class="deadline">
+                            <h5 class="txt-h5" id="urgent-date">No urgent tasks.</h5>
+                            <p>Upcoming Deadline</p>
+                        </div>
+                    </div>
+                    <div class="box-container">
+                        <div class="box box-medium gap-18">
+                            <div class="img-container">
+                                <img src="./assets/icons/to-do_circle.svg" alt="To-do" class="fade" draggable="false">
+                                <img src="./assets/icons/to-do_circle_neg.svg" alt="To-do" class="negative" draggable="false">
+                            </div>
+                            <div class="d-flex-col">
+                                <h2 class="txt-h2" id="to-do">0</h2>
+                                <p>To-do</p>
+                            </div>
+                        </div>
+                        <div class="box box-medium gap-18">
+                            <div class="img-container">
+                                <img src="./assets/icons/done_circle.svg" alt="Done" class="fade" draggable="false">
+                                <img src="./assets/icons/done_circle_neg.svg" alt="Done" class="negative" draggable="false">
+                            </div>
+                            <div class="d-flex-col">
+                                <h2 class="txt-h2" id="done">0</h2>
+                                <p>Done</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </section>
+</body>
+
+</html>
