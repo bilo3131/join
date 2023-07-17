@@ -1,6 +1,3 @@
-'use strict';
-
-
 /**
  * Initial function that gets executed after the document is loaded.
  */
@@ -9,7 +6,6 @@ async function init() {
     highlightActiveMenuItem();
     logoutModalEventListener();
 }
-
 
 /**
  * Inserts the HTML from the template files into the referenced file.
@@ -28,7 +24,6 @@ async function includeHTML() {
         }
     }
 }
-
 
 /**
  * Highlights the active menu item after the page is loaded. The marking takes place on the basis of the current path.
@@ -58,7 +53,6 @@ function highlightActiveMenuItem() {
     }
 }
 
-
 /**
  * Adds the class .active to the given element.
  * @param {string} elem String of the item
@@ -70,7 +64,6 @@ function addActiveClass(elem) {
     desktopEl?.classList.add('active');
     mobileEl?.classList.add('active');
 }
-
 
 /**
  * Adds an event listener to the profile picture to toggle the logout modal.
@@ -84,7 +77,6 @@ function logoutModalEventListener() {
     });
 }
 
-
 /**
  * Loads the items to the given key from the backend. If no items are available an empty array is returned.
  * @param {string} key Key of the item that should be loaded.
@@ -93,7 +85,6 @@ function logoutModalEventListener() {
 async function loadItem(key) {
     return await JSON.parse(backend.getItem(key)) || [];
 }
-
 
 /**
  * Stores the items under the given key in the backend.
@@ -104,7 +95,6 @@ async function storeItem(key, content) {
     await backend.setItem(key, JSON.stringify(content));
 }
 
-
 /**
  * Formats the date in german notation.
  * @param {string} date Date in format yyyy-mm-dd,
@@ -114,6 +104,5 @@ function formatDate(date) {
     const [year, month, day] = date.split('-');
     return `${day}.${month}.${year}`;
 }
-
 
 init();

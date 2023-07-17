@@ -1,21 +1,18 @@
 /**
  * Initial function that gets executed after the document has loaded.
-*/
+ */
 async function init() {
-    try {
-        const tasksString = await getItem('tasks');
-        const correctedTasksString = tasksString.replace(/\'/g, '\"');
-        if (correctedTasksString) {
-            tasks = JSON.parse(correctedTasksString);
-        } else {
-            tasks = [];
-        }
-        setTaskNumbers();
-        setUrgentTasks();
-        addTaskEventListener();
-    } catch (error) {
-        console.error(error);
+    const tasksString = await getItem('tasks');
+    const correctedTasksString = tasksString.replace(/\'/g, '\"');
+    const correctedTasksJSON = correctedTasksString.replace(/False/g, 'false').replace(/True/g, 'true');
+    if (correctedTasksJSON) {
+        tasks = JSON.parse(correctedTasksJSON);
+    } else {
+        tasks = [];
     }
+    setTaskNumbers();
+    setUrgentTasks();
+    addTaskEventListener();
 }
 
 /**

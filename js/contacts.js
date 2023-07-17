@@ -2,19 +2,15 @@
  * Initial function that gets executed after the document is loaded.
  */
 async function init() {
-    try {
-        const contactsString = await getItem('contacts');
-        const correctedContactsString = contactsString.replace(/\'/g, '\"');
-        if (correctedContactsString) {
-            contacts = JSON.parse(correctedContactsString);
-        } else {
-            contacts = [];
-        }
-        buttonEventListener();
-        renderContactList();
-    } catch (error) {
-        console.error('initialization error: No contacts saved!');
+    const contactsString = await getItem('contacts');
+    const correctedContactsString = contactsString.replace(/\'/g, '\"');
+    if (correctedContactsString) {
+        contacts = JSON.parse(correctedContactsString);
+    } else {
+        contacts = [];
     }
+    buttonEventListener();
+    renderContactList();
 }
 
 /**

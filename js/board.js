@@ -2,20 +2,17 @@
  * Initial function that gets executed after the document is loaded.
  */
 async function init() {
-    try {
-        const tasksString = await getItem('tasks');
-        const contactsString = await getItem('contacts');
-        const correctedTasksString = tasksString.replace(/\'/g, '\"');
-        const correctedContactsString = contactsString.replace(/\'/g, '\"');
-        await parseItems(correctedTasksString, correctedContactsString);
-        renderTaskItems(tasks);
-        addSeachBarEventListener();
-        addNewTaskButtonEventListener();
-        addModalCloseEventListener();
-        initTask();
-    } catch (error) {
-        console.error('initialization error: No tasks saved!', error);
-    }
+    const tasksString = await getItem('tasks');
+    const contactsString = await getItem('contacts');
+    const correctedTasksString = tasksString.replace(/\'/g, '\"');
+    const correctedContactsString = contactsString.replace(/\'/g, '\"');
+    const correctedTasksJSON = correctedTasksString.replace(/False/g, 'false').replace(/True/g, 'true');
+    await parseItems(correctedTasksJSON, correctedContactsString);
+    renderTaskItems();
+    addSeachBarEventListener();
+    addNewTaskButtonEventListener();
+    addModalCloseEventListener();
+    initTask();
 }
 
 /**
@@ -25,8 +22,8 @@ async function init() {
  */
 async function parseItems(correctedTasksString, correctedContactsString) {
     if (correctedTasksString || correctedContactsString) {
-        tasks = JSON.parse(correctedTasksString);
-        contacts = JSON.parse(correctedContactsString);
+        contacts = await (JSON.parse(correctedContactsString));
+        tasks = await (JSON.parse(correctedTasksString));
     } else {
         tasks = [];
         contacts = [];
@@ -62,13 +59,13 @@ async function updateItem(item) {
  * Renders the tasks in the correct board column.
  * @param {array} tasksArr Array of task objects.
  */
-function renderTaskItems(tasksArr) {
+function renderTaskItems() {
     const toDoEl = document.getElementById('todo');
     const inProgressEl = document.getElementById('in-progress');
     const awaitingFeedbackEl = document.getElementById('awaiting-feedback');
     const doneEl = document.getElementById('done');
     clearElementsInnerHTML(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl);
-    setTaskStatus(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl, tasksArr)
+    setTaskStatus(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl)
     addDragItemEventListener();
     addDragContainerEventListener();
     addNewTaskEventListener();
@@ -82,8 +79,8 @@ function renderTaskItems(tasksArr) {
  * @param {HTMLElement} doneEl Connected HTML-Elements.
  * @param {HTMLElement} tasksArr Connected HTML-Elements.
  */
-function setTaskStatus(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl, tasksArr) {
-    for (let task of tasksArr) {
+function setTaskStatus(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl) {
+    for (let task of tasks) {
         const assignees = renderTaskAssignees(task);
         const taskProgress = getTaskProgress(task);
         switch (task.status) {
@@ -231,7 +228,7 @@ async function updateSubtasks(taskId, subtaskId) {
     const subtask = task.subtasks.find(subtask => subtask.id === subtaskId);
     const subtaskIsChecked = document.getElementById(subtaskId).checked;
     subtask.isChecked = subtaskIsChecked;
-    setItem('tasks', tasks);
+    await setItem('tasks', tasks);
     renderTaskItems(tasks);
 }
 
@@ -335,7 +332,7 @@ function deleteTask(id) {
     renderTaskItems(tasks);
     notify('Successfully deleted!');
     modal.close();
-}  
+}
 
 /**
  * Gets the color of the category element.

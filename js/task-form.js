@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Initial function that gets executed after the document is loaded.
  */
@@ -137,16 +135,21 @@ function clearInputFields() {
     const categoryInp = document.getElementById('category');
     const dateInp = document.getElementById('date');
     const assigneeInp = document.querySelectorAll('input[type="checkbox"]:checked');
-    const priority = document.querySelector('input[name="priority"]:checked');
     const subtaskContainer = document.getElementById('subtask-container');
-
     titleInp.value = '';
     descriptionInp.value = '';
     categoryInp.value = '';
     assigneeInp.forEach(assignee => assignee.checked = false);
     dateInp.value = '';
     subtaskContainer.innerHTML = '';
+    clearPriority();
+}
 
+/**
+ * Clear the priority of the task
+ */
+function clearPriority() {
+    const priority = document.querySelector('input[name="priority"]:checked');
     if (priority) {
         priority.checked = false;
     }
@@ -198,6 +201,7 @@ function renderAssigneesBubbles() {
 }
 
 /**
+ * Run render the assignees bubbles 
  * @returns undefined
  */
 function runThroughAssigneesBubbles(assigneeBubblesEl, selectedAssignees, assigneesHTML) {

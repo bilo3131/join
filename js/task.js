@@ -2,17 +2,14 @@
  * Initial function that gets executed after the document is loaded.
  */
 async function init() {
-    try {
-        const tasksString = await getItem('tasks');
-        const contactsString = await getItem('contacts');
-        const correctedTasksString = tasksString.replace(/\'/g, '\"');
-        const correctedContactsString = contactsString.replace(/\'/g, '\"');
-        await parseItems(correctedTasksString, correctedContactsString);
-        addTaskEventListener();
-        initTask();
-    } catch (error) {
-        console.error('initialization error: No tasks saved!');
-    }
+    const contactsString = await getItem('contacts');
+    const tasksString = await getItem('tasks');
+    const correctedTasksString = tasksString.replace(/\'/g, '\"');
+    const correctedContactsString = contactsString.replace(/\'/g, '\"');
+    const correctedTasksJSON = correctedTasksString.replace(/False/g, 'false').replace(/True/g, 'true');
+    await parseItems(correctedTasksJSON, correctedContactsString);
+    addTaskEventListener();
+    initTask();
 }
 
 /**
@@ -22,8 +19,8 @@ async function init() {
  */
 async function parseItems(correctedTasksString, correctedContactsString) {
     if (correctedTasksString || correctedContactsString) {
-        tasks = JSON.parse(correctedTasksString);
-        contacts = JSON.parse(correctedContactsString);
+        contacts = await (JSON.parse(correctedContactsString));
+        tasks = await (JSON.parse(correctedTasksString));
     } else {
         tasks = [];
         contacts = [];
