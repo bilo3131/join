@@ -69,7 +69,7 @@ function addTask() {
 /**
  * Set tasks on the webpage
  */
-function setTasks(id, titleInp, descriptionInp, categoryInp, assignees, dateInp, priority, createdWithStatus, subtasks) {
+async function setTasks(id, titleInp, descriptionInp, categoryInp, assignees, dateInp, priority, createdWithStatus, subtasks) {
     if (isInputValid(assignees)) {
         const task = {
             id: id,
@@ -82,7 +82,7 @@ function setTasks(id, titleInp, descriptionInp, categoryInp, assignees, dateInp,
             status: createdWithStatus,
             subtasks: subtasks
         }
-        storeTasks(task);
+        await storeTasks(task);
     }
 }
 
@@ -163,7 +163,7 @@ async function storeTasks(task) {
     tasks.push(task);
     await setItem('tasks', tasks);
     clearInputFields();
-    window.location.pathname = '/board.html';
+    window.location.href = './board.html';
 }
 
 /**

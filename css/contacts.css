@@ -180,7 +180,6 @@ dialog::backdrop {
     backdrop-filter: blur(3px);
 }
 
-
 /* Modal */
 .modal-top {
     display: flex;
@@ -221,7 +220,6 @@ dialog::backdrop {
 #hide-details {
     display: none;
 }
-
 
 @media screen and (max-width: 1400px) {
     .contact-details-header {
@@ -372,8 +370,7 @@ dialog::backdrop {
     }
 }
 
-
-@media screen and (max-width: 576px) {
+@media screen and (max-width: 620px) {
     .contacts {
         position: relative;
         height: calc(100% - 70px - 80px);

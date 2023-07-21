@@ -1,10 +1,10 @@
 /**
  * Adds the keydown event listener to the search bar.
  */
-function addSeachBarEventListener() {
+function addSearchBarEventListener() {
     const searchBarInp = document.getElementById('search-task');
     searchBarInp.addEventListener('input', () => {
-        renderTaskItems(filterTasks(searchBarInp));
+        renderTaskItems(filterTasks(searchBarInp.value));
     });
 }
 

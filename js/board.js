@@ -9,7 +9,7 @@ async function init() {
     const correctedTasksJSON = correctedTasksString.replace(/False/g, 'false').replace(/True/g, 'true');
     await parseItems(correctedTasksJSON, correctedContactsString);
     renderTaskItems();
-    addSeachBarEventListener();
+    addSearchBarEventListener();
     addNewTaskButtonEventListener();
     addModalCloseEventListener();
     initTask();
