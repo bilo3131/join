@@ -4,7 +4,8 @@
 function addSearchBarEventListener() {
     const searchBarInp = document.getElementById('search-task');
     searchBarInp.addEventListener('input', () => {
-        renderTaskItems(filterTasks(searchBarInp.value));
+        let filteredTasks = filterTasks(searchBarInp.value);
+        renderTaskItems(filteredTasks);
     });
 }
 

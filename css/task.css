@@ -243,7 +243,7 @@ form>div {
 
 
 /* Subtasks */
-#subtask-input {
+.addable-input {
     flex-grow: 1;
     font-size: var(--h6-font-size);
     padding: 13px 21px;
@@ -256,7 +256,7 @@ form>div {
     background: white;
 }
 
-#subtask-add {
+.add-button {
     font-size: var(--h6-font-size);
     padding: 12px 12px 12px 6px;
     margin-top: 8px;
@@ -270,9 +270,20 @@ form>div {
     transition: all 0.14s ease-in-out;
 }
 
-#subtask-add:hover {
+.add-button:hover {
     background: var(--light-gray);
 }
+
+.close-input {
+    border-radius: unset;
+}
+
+
+/* ***************************************************
+.close-input img {
+    height: 14px;
+} 
+**************************************************** */
 
 .subtask-container {
     margin-top: 8px;
@@ -306,7 +317,6 @@ form>div {
 
 .subtask-item {
     justify-content: space-between;
-    ;
 }
 
 .subtask-delete {

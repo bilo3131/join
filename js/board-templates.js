@@ -26,7 +26,12 @@ function taskColHeaderTemp(title, id) {
 function taskItemHTMLTemp(task, assignees, progress) {
     return (`
         <div class="task-item" data-id="${task.id}" draggable="true">
-            <div class="category" style="background:${getCategoryColor(task)}">${task.category}</div>
+            <div class="task-top">
+                <div class="category" style="background:${getCategoryColor(task)}">${task.category}</div>
+                <div class="move-task">
+                    <button class="move-task-button" id="${task.id}">Move Task</button>
+                </div>
+            </div>
             <div>
                 <div class="task-title">${task.title}</div>
                 <div class="task-description">${task.description}</div>

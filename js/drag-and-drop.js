@@ -12,7 +12,6 @@ function addDragItemEventListener() {
     });
 }
 
-
 /**
  * Marks the dragging item and the drop containers.
  * @param {object} item Task object.
@@ -22,7 +21,6 @@ function itemDragStartEvent(item, dropContainers) {
     item.classList.add('dragging');
     dropContainers.forEach(container => container.classList.add('mark-drop'));
 }
-
 
 /**
  * Removes the marking and updates the item.
@@ -35,7 +33,6 @@ function itemDragEndEvent(item, dropContainers) {
     updateItem(item);
 }
 
-
 /**
  * Opens the board item modal on click.
  * @param {object} item Task object.
@@ -47,16 +44,19 @@ function itemClickEvent(item) {
     const subtasks = renderSubtasks(task);
     let assignees = '';
     task.assignees.forEach(assignee => {
-        const contact = contacts.find(contact => contact.id === assignee);
-        const firstnameChar = contact.firstname.charAt(0).toUpperCase();
-        const lastnameChar = contact.lastname.charAt(0).toUpperCase();
-        const initials = `${firstnameChar}${lastnameChar}`;
-        assignees += modalAssigneHTMLTemp(initials, contact);
+        setContactInitials(assignee, assignees);
     })
     modalContent.innerHTML = modalItemHTMLTemp(task, assignees, subtasks);
-    modal.showModal()
+    modal.showModal();
 }
 
+function setContactInitials(assignee, assignees) {
+    const contact = contacts.find(contact => contact.id === assignee);
+    const firstnameChar = contact.firstname.charAt(0).toUpperCase();
+    const lastnameChar = contact.lastname.charAt(0).toUpperCase();
+    const initials = `${firstnameChar}${lastnameChar}`;
+    assignees += modalAssigneHTMLTemp(initials, contact);
+}
 
 /**
  * Adds the dragover event to each board column.
@@ -67,7 +67,6 @@ function addDragContainerEventListener() {
         container.addEventListener('dragover', event => containerDragOverEvent(event, container));
     });
 }
-
 
 /**
  * Dragover function for the board colums.
@@ -85,7 +84,6 @@ function containerDragOverEvent(event, container) {
         container.insertBefore(draggedItem, afterElement);
     }
 }
-
 
 /**
  * Gets the drag after element.

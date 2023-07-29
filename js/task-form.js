@@ -19,7 +19,7 @@ function buttonEventListener() {
     clearTaskBtn?.addEventListener('click', (e) => {
         e.preventDefault();
         clearInputFields();
-    })
+    });
     subtaskBtn.addEventListener('click', addSubtaskToTask);
 }
 
@@ -304,8 +304,6 @@ function subtaskHTMLTemp(taskId, subtaskText, id, isChecked = false) {
         </div>
     `);
 }
-
-
 
 /**
  * Returns the HTML template for the subtask.

@@ -1,14 +1,14 @@
 /**
  * Initial function that gets executed after the document is loaded.
  */
-async function init() {
+async function initBoard() {
     const tasksString = await getItem('tasks');
     const contactsString = await getItem('contacts');
     const correctedTasksString = tasksString.replace(/\'/g, '\"');
     const correctedContactsString = contactsString.replace(/\'/g, '\"');
     const correctedTasksJSON = correctedTasksString.replace(/False/g, 'false').replace(/True/g, 'true');
     await parseItems(correctedTasksJSON, correctedContactsString);
-    renderTaskItems();
+    renderTaskItems(tasks);
     addSearchBarEventListener();
     addNewTaskButtonEventListener();
     addModalCloseEventListener();
@@ -38,8 +38,9 @@ async function parseItems(correctedTasksString, correctedContactsString) {
 function filterTasks(searchBarInp) {
     const filteredTasks = tasks.filter(task => {
         const taskTitle = task.title.toLowerCase();
-        const searchInput = searchBarInp.value.toLowerCase();
-        return taskTitle.includes(searchInput);
+        const taskDescription = task.description.toLowerCase();
+        const searchInput = searchBarInp.toLowerCase();
+        return taskTitle.includes(searchInput) || taskDescription.includes(searchInput);
     });
     return filteredTasks;
 }
@@ -59,28 +60,28 @@ async function updateItem(item) {
  * Renders the tasks in the correct board column.
  * @param {array} tasksArr Array of task objects.
  */
-function renderTaskItems() {
+function renderTaskItems(tasksArr) {
     const toDoEl = document.getElementById('todo');
     const inProgressEl = document.getElementById('in-progress');
     const awaitingFeedbackEl = document.getElementById('awaiting-feedback');
     const doneEl = document.getElementById('done');
     clearElementsInnerHTML(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl);
-    setTaskStatus(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl)
+    setTaskStatus(tasksArr, toDoEl, inProgressEl, awaitingFeedbackEl, doneEl)
     addDragItemEventListener();
     addDragContainerEventListener();
     addNewTaskEventListener();
 }
 
 /**
- * Set the status of the tasks
+ * Set the status of the tasks.
  * @param {HTMLElement} toDoEl Connected HTML-Elements.
  * @param {HTMLElement} inProgressEl Connected HTML-Elements.
  * @param {HTMLElement} awaitingFeedbackEl Connected HTML-Elements.
  * @param {HTMLElement} doneEl Connected HTML-Elements.
  * @param {HTMLElement} tasksArr Connected HTML-Elements.
  */
-function setTaskStatus(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl) {
-    for (let task of tasks) {
+function setTaskStatus(tasksArr, toDoEl, inProgressEl, awaitingFeedbackEl, doneEl) {
+    for (let task of tasksArr) {
         const assignees = renderTaskAssignees(task);
         const taskProgress = getTaskProgress(task);
         switch (task.status) {
@@ -366,4 +367,4 @@ function getCategoryColor(task) {
     }
 }
 
-init();
+initBoard();
