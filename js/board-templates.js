@@ -27,10 +27,7 @@ function taskItemHTMLTemp(task, assignees, progress) {
     return (`
         <div class="task-item" data-id="${task.id}" draggable="true">
             <div class="task-top">
-                <div class="category" style="background:${getCategoryColor(task)}">${task.category}</div>
-                <div class="move-task">
-                    <button class="move-task-button" id="${task.id}">Move Task</button>
-                </div>
+            <div class="category" style="background:${getCategoryColor(task)}">${task.category}</div>
             </div>
             <div>
                 <div class="task-title">${task.title}</div>
@@ -75,7 +72,7 @@ function modalItemHTMLTemp(task, assignees, subtasks) {
             </div>`;
     }
     return (`
-        <div class="modal-category"  style="background:${getCategoryColor(task)}">${task.category}</div>
+        <div class="modal-category" style="background:${getCategoryColor(task)}">${task.category}</div>
         <div>
             <div class="modal-title txt-h4">${task.title}</div>
             <div class="modal-description">${task.description}</div>
@@ -90,9 +87,15 @@ function modalItemHTMLTemp(task, assignees, subtasks) {
             <div class="modal-assignee-container d-flex-col">${assignees}</div>
         </div>
         ${subtaskEl}
-        <div>
-            <button class="btn btn-primary" id="modal-edit" onclick="openEditTaskModal('${task.id}')"><img src="./assets/icons/edit.svg"></button>
-            <button class="btn btn-primary" id="modal-delete" onclick="deleteTask('${task.id}')"><img src="./assets/icons/trash_white.svg"></button>
+        <div class="modal-assignee-bottom">
+            <div class="modal-assignee-buttons">
+                <button class="btn btn-primary modal-button" id="task-move-up" onclick="moveTask(-1, '${task.id}')"> <img class="color-white" src="./assets/icons/dropdown_arrow.svg"> </button>
+                <button class="btn btn-primary modal-button" id="task-move-down" onclick="moveTask(+1, '${task.id}')"> <img class="color-white" src="./assets/icons/dropdown_arrow.svg"> </button>
+            </div>
+            <div class="modal-assignee-buttons">
+            <button class="btn btn-primary modal-button" id="modal-edit" onclick="openEditTaskModal('${task.id}')"><img src="./assets/icons/edit.svg"></button>
+            <button class="btn btn-primary modal-button" id="modal-delete" onclick="deleteTask('${task.id}')"><img src="./assets/icons/trash_white.svg"></button>
+            </div>
         </div>
     `);
 }

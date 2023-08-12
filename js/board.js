@@ -51,6 +51,7 @@ function filterTasks(searchBarInp) {
  */
 async function updateItem(item) {
     const task = tasks.find(task => task.id === item.dataset.id);
+    console.log(item);
 
     task.status = item.parentElement.dataset.category;
     await setItem('tasks', tasks);
@@ -250,7 +251,7 @@ function prefillTaskForm(task) {
     priority.checked = true;
     task.assignees.forEach(assignee => {
         document.getElementById(assignee).checked = true;
-    })
+    });
 }
 
 /**
@@ -365,6 +366,40 @@ function getCategoryColor(task) {
         case 'Backoffice':
             return '#80004f';
     }
+}
+
+/**
+ * For moving the task in the next or previous category
+ * @param {DirectionSetting} direction Check if clicked up or down.
+ * @param {*} id The ID of the respective task
+ */
+function moveTask(direction, id) {
+    let categoryArray = ['todo', 'progress', 'awaiting', 'done'];
+    const move = tasks.find(task => task.id === id);
+    for (let i = 0; i < categoryArray.length; i++) {
+        if (categoryArray[i] == move.status) {
+            if (i + direction < 0) {
+                i = 4;
+            } else if (i + direction >= categoryArray.length) {
+                i = -1;
+            }
+            moveAndSave(categoryArray, move, direction, i);
+            break;
+        }
+    }
+}
+
+/**
+ * Move and save the task in the online storage.
+ * @param {*} categoryArray Available categories.
+ * @param {*} move Task to move.
+ * @param {*} direction Check if clicked up or down.
+ * @param {*} i Index of the current category.
+ */
+function moveAndSave(categoryArray, move, direction, i) {
+    move.status = categoryArray[i + direction];
+    setItem('tasks', tasks);
+    renderTaskItems(tasks);
 }
 
 initBoard();

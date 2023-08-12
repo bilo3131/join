@@ -44,18 +44,14 @@ function itemClickEvent(item) {
     const subtasks = renderSubtasks(task);
     let assignees = '';
     task.assignees.forEach(assignee => {
-        setContactInitials(assignee, assignees);
-    })
+        const contact = contacts.find(contact => contact.id === assignee);
+        const firstnameChar = contact.firstname.charAt(0).toUpperCase();
+        const lastnameChar = contact.lastname.charAt(0).toUpperCase();
+        const initials = `${firstnameChar}${lastnameChar}`;
+        assignees += modalAssigneHTMLTemp(initials, contact);
+    });
     modalContent.innerHTML = modalItemHTMLTemp(task, assignees, subtasks);
     modal.showModal();
-}
-
-function setContactInitials(assignee, assignees) {
-    const contact = contacts.find(contact => contact.id === assignee);
-    const firstnameChar = contact.firstname.charAt(0).toUpperCase();
-    const lastnameChar = contact.lastname.charAt(0).toUpperCase();
-    const initials = `${firstnameChar}${lastnameChar}`;
-    assignees += modalAssigneHTMLTemp(initials, contact);
 }
 
 /**
@@ -100,7 +96,7 @@ function getDragAfterElement(container, y) {
             return {
                 offset: offset,
                 element: child
-            }
+            };
         } else {
             return closest;
         }

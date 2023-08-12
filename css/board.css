@@ -209,10 +209,21 @@ dialog::backdrop {
     border-radius: 100%;
 }
 
-#modal-edit {
-    position: absolute;
-    right: 80px;
-    bottom: 32px;
+.modal-assignee-bottom {
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-assignee-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+#task-move-up {
+    transform: rotate(180deg);
+}
+
+.modal-button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -220,27 +231,16 @@ dialog::backdrop {
     height: 36px;
 }
 
-#modal-edit img {
+.modal-button img {
     width: 12px;
 }
 
-#modal-delete {
-    position: absolute;
-    right: 28px;
-    bottom: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 36px;
-    height: 36px;
+.color-white {
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
 }
 
 #modal-delete:hover {
     background: var(--urgent);
-}
-
-#modal-delete img {
-    width: 12px;
 }
 
 #modal-close {
