@@ -154,12 +154,6 @@
     }
 }
 
-/* @media screen and (max-width: 900px) {
-    .content {
-        padding: 80px 100px 40px 60px;
-    }
-} */
-
 @media screen and (max-width: 815px) {
     .content {
         padding: 80px 20px 40px 20px;
@@ -213,6 +207,7 @@
 
 @media screen and (max-width: 620px) {
     .content {
+        display: block;
         padding: 20px 10px 40px 10px;
     }
 

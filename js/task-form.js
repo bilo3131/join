@@ -98,7 +98,8 @@ function checkCategory() {
 }
 
 /**
- * 
+ * Show the inputfield and hide the selectfield to add a new category
+ * Hide the inputfield and show the selectfield to select a category
  */
 function toggleInput() {
     let inputCategory = document.getElementById('inputfield-category');
@@ -109,6 +110,9 @@ function toggleInput() {
     newCategory.value = '';
 }
 
+/**
+ * Add the typed categorie to the archive and go back to select a category
+ */
 function addCategory() {
     let newCategory = document.getElementById('new-category');
     let categories = document.getElementById('category');
@@ -118,6 +122,10 @@ function addCategory() {
     toggleInput();
 }
 
+/**
+ * @param {String} newCategory The value of the typed category
+ * @returns The added category as an option in HTML
+ */
 function addNewCategoryHTML(newCategory) {
     return /*html*/ `
         <option value=${newCategory}>${newCategory}</option>
