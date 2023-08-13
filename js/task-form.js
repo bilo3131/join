@@ -87,6 +87,44 @@ async function setTasks(id, titleInp, descriptionInp, categoryInp, assignees, da
 }
 
 /**
+ * To check if the user want to add a new category
+ */
+function checkCategory() {
+    let categories = document.getElementById('category');
+    if (categories.value == 'Add new Category') {
+        categories.value = '';
+        toggleInput();
+    }
+}
+
+/**
+ * 
+ */
+function toggleInput() {
+    let inputCategory = document.getElementById('inputfield-category');
+    let categories = document.getElementById('category');
+    let newCategory = document.getElementById('new-category');
+    inputCategory.classList.toggle('d-none'); 
+    categories.classList.toggle('d-none');
+    newCategory.value = '';
+}
+
+function addCategory() {
+    let newCategory = document.getElementById('new-category');
+    let categories = document.getElementById('category');
+    if (newCategory.value) {
+        categories.innerHTML += addNewCategoryHTML(newCategory.value);
+    }
+    toggleInput();
+}
+
+function addNewCategoryHTML(newCategory) {
+    return /*html*/ `
+        <option value=${newCategory}>${newCategory}</option>
+    `;
+}
+
+/**
  * Gets all subtask that have been added to the form.
  * @returns Array of subtasks.
  */
@@ -146,13 +184,11 @@ function clearInputFields() {
 }
 
 /**
- * Clear the priority of the task
+ * Set the standart value of the priority to 'LoWw.
  */
 function clearPriority() {
-    const priority = document.querySelector('input[name="priority"]:checked');
-    if (priority) {
-        priority.checked = false;
-    }
+    const priority = document.getElementById('low');
+    priority.checked = true;
 }
 
 /**

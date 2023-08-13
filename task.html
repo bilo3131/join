@@ -40,7 +40,8 @@
                         <!-- Title -->
                         <div class="d-flex-col">
                             <label for="title" class="label">Title</label>
-                            <input type="text" name="title" class="text-input" id="title" placeholder="Enter a title" required>
+                            <input type="text" name="title" class="text-input" id="title" placeholder="Enter a title"
+                                required>
                         </div>
                         <!-- Desctiption -->
                         <div class="d-flex-col">
@@ -51,8 +52,19 @@
                         <!-- Category -->
                         <div class="d-flex-col">
                             <label for="category" class="label">Category</label>
-                            <select name="category" id="category" required>
+                            <div class="d-flex d-none" id="inputfield-category">
+                                <input type="text" class="input-adds" id="new-category"
+                                    placeholder="Add new category">
+                                <button type="button" onclick="addCategory()" id="add-category" class="add-button">
+                                    <img src="./assets/icons/add_black.svg" class="btn-icon">
+                                </button>
+                                <button type="button" onclick="toggleInput()" id="close-add-category" class="add-button">
+                                    <img src="./assets/icons/close_black.svg" class="btn-icon">
+                                </button>
+                            </div>
+                            <select name="category" id="category" onchange="checkCategory()" required>
                                 <option value="" disabled selected hidden>Select task category</option>
+                                <option value="Add new Category">Add new Category</option>
                                 <option value="Accounting/Finance">Accounting/Finance</option>
                                 <option value="Research">Research</option>
                                 <option value="Management">Management</option>
@@ -92,17 +104,17 @@
                         <div>
                             <label for="priority" class="label">Priority</label>
                             <div id="priority">
-                                <input type="radio" name="priority" id="urgent" value="urgent" required>
+                                <input type="radio" name="priority" id="urgent" value="urgent">
                                 <label for="urgent">
                                     <span class="checkmark">Urgent</span>
                                     <i class="icon icon-urgent"></i>
                                 </label>
-                                <input type="radio" name="priority" id="medium" value="medium" required>
+                                <input type="radio" name="priority" id="medium" value="medium">
                                 <label for="medium">
                                     <span class="checkmark">Medium</span>
                                     <i class="icon icon-medium"></i>
                                 </label>
-                                <input type="radio" name="priority" id="low" value="low" required>
+                                <input type="radio" name="priority" id="low" checked="true" value="low">
                                 <label for="low">
                                     <span class="checkmark">Low</span>
                                     <i class="icon icon-low"></i>
@@ -113,8 +125,11 @@
                         <div>
                             <label for="subtasks" class="label">Subtasks</label>
                             <div class="d-flex">
-                                <input type="text" name="subtasks" id="subtask-input" placeholder="Add new subtask"><button type="button" id="subtask-add">
-                                <img src="./assets/icons/add_black.svg" class="btn-icon"></button>
+                                <input type="text" class="input-adds" name="subtasks" id="subtask-input"
+                                    placeholder="Add new subtask">
+                                <button type="button" class="add-button" id="subtask-add">
+                                    <img src="./assets/icons/add_black.svg" class="btn-icon">
+                                </button>
                             </div>
                             <div id="subtask-container" class="subtask-container"></div>
                         </div>

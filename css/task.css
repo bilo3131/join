@@ -37,12 +37,16 @@ form>div {
     border-radius: var(--border-radius-sm);
     outline: none;
     background: url(./../assets/icons/dropdown_arrow.svg) no-repeat right 24px center;
+    cursor: pointer;
     background-color: var(--white);
     -webkit-appearance: none;
     appearance: none;
-    cursor: pointer;
 }
 
+#new-category {
+    background: url(./../assets/icons/close.svg) no-repeat right 24px center;
+    background-color: var(--white);
+}
 
 #date {
     padding: 12px 21px;
@@ -243,7 +247,7 @@ form>div {
 
 
 /* Subtasks */
-.addable-input {
+.input-adds {
     flex-grow: 1;
     font-size: var(--h6-font-size);
     padding: 13px 21px;
@@ -254,6 +258,14 @@ form>div {
     border-right: none;
     border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
     background: white;
+}
+
+#add-category {
+    border-radius: 0 0 0 0;
+}
+
+#close-add-category img {
+    width: 15px;
 }
 
 .add-button {
@@ -273,17 +285,6 @@ form>div {
 .add-button:hover {
     background: var(--light-gray);
 }
-
-.close-input {
-    border-radius: unset;
-}
-
-
-/* ***************************************************
-.close-input img {
-    height: 14px;
-} 
-**************************************************** */
 
 .subtask-container {
     margin-top: 8px;

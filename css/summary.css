@@ -1,3 +1,9 @@
+.content {
+    display: flex;
+    gap: 10%;
+    padding: 80px 0 40px 100px;
+}
+
 /* Header */
 .summary-header {
     position: relative;
@@ -126,8 +132,9 @@
 }
 
 /* Greeting */
-.greeting {
-    display: none;
+#greeting {
+    display: flex;
+    margin-top: 200px;
     color: var(--primary);
 }
 
@@ -137,11 +144,21 @@
     color: var(--secondary);
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1120px) {
+    #greeting {
+        display: none; 
+    }
+
     .content {
-        padding: 80px 60px 40px 60px;
+        padding: 80px 100px 40px 60px;
     }
 }
+
+/* @media screen and (max-width: 900px) {
+    .content {
+        padding: 80px 100px 40px 60px;
+    }
+} */
 
 @media screen and (max-width: 815px) {
     .content {

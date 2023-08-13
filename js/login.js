@@ -1,8 +1,12 @@
+let loggedInUserName;
+
 /**
  * Locates to the page as a guest
  */
 function guestLogin() {
+    loggedInUserName = 'Guest';
     window.location.href = 'summary.html?msg=guest login';
+    saveData();
 }
 
 /**
@@ -12,7 +16,8 @@ function guestLogin() {
 function login() {
     let user = users.find(u => u.email == loginMail.value && u.password == loginPassword.value);
     if (user) {
-        window.location.href = `summary.html?msg=logged in`;
+        loggedInUserName = user.firstName;
+        window.location.href = `summary.html?msg=${user.firstName} ${user.lastName} logged in`;
     } 
     else {
         loginPassword.style.borderColor = 'red';
@@ -28,6 +33,7 @@ function saveData() {
     if (checkbox.checked) {
         localStorage.setItem('JoinEmail', loginMail.value);
         localStorage.setItem('JoinPassword', loginPassword.value);
+        localStorage.setItem('loggedInUser', loggedInUserName);
     }
 }
 

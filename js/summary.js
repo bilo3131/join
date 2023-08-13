@@ -16,6 +16,55 @@ async function init() {
 }
 
 /**
+ * To greet the logged in user in the correct form based on the current time.
+ */
+function greetingUser() {
+    let greetSection = document.getElementById('greeting');
+    let greet = getGreeting();
+    let greetUser = getUserName();
+    greetSection.innerHTML = greetHTML(greet, greetUser);
+}
+
+/**
+ * Greet the User who is logged in.
+ * @param {String} greet The correct form of the greet based on the current time.
+ * @param {String} greetUser The name of the user who should be greet.
+ * @returns The HTML part of the greeting.
+ */
+function greetHTML(greet, greetUser) {
+    return /*html*/ `
+        <span class="txt-h2">Good ${greet}, <p class="greeting-name">${greetUser}</p></span>
+    `;
+}
+
+/**
+ * Get the saved first name from the LocalStorage.
+ * @returns The first name of the logged in user.
+ */
+function getUserName() {
+    let userName = localStorage.getItem('loggedInUser');
+    return userName;
+}
+
+/**
+ * Get the greeting by targeting the current hour.
+ * @returns The correct greet based on the current time.
+ */
+function getGreeting() {
+    const d = new Date();
+    let time = d.getHours();
+    if (time < 13 && time > 5) {
+        return 'morning';
+    } else if (time < 18 && time > 12) {
+        return 'afternoon';
+    } else if (time < 22 && time > 17) {
+        return 'evening';
+    } else {
+        return 'night'
+    }
+}
+
+/**
  * Sets event listener to redirect to the board when you click on a box.
  */
 function addTaskEventListener() {

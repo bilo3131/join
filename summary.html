@@ -18,7 +18,7 @@
     <script defer src="./js/summary.js"></script>
 </head>
 
-<body>
+<body onload="greetingUser()">
     <!-- Navigation -->
     <section template-html="./assets/templates/navigation.html"></section>
 
@@ -36,10 +36,10 @@
                     <p class="txt-h5">Everything in a nutshell!</p>
                 </div>
                 <!-- Greeting -->
-                <div class="greeting">
-                    <h2 class="txt-h2">Good morning,</h2>
+                <!-- <div class="greeting">
+                    <h2 class="txt-h2">Good </h2>
                     <p class="greeting-name" id="greeting-name">Dennis Ammen</p>
-                </div>
+                </div> -->
                 <!-- Summary -->
                 <div class="grid">
                     <div class="box box-small">
@@ -92,6 +92,9 @@
                     </div>
                 </div>
             </main>
+            <div id="greeting">
+
+            </div>
         </div>
     </section>
 </body>
