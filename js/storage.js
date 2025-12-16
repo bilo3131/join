@@ -1,32 +1,53 @@
-/** Token for the remote storage */
-const STORAGE_TOKEN = 'K04GY8EGH0DPP9YZRYTM3Q7KK9E05FZ35IHUWJ3I';
-/** URL of the remote storge */
-const STORAGE_URL = 'https://remote-storage.developerakademie.org/item';
+const STORAGE_URL = 'http://127.0.0.1:8000/api/';
 
-/**
- * Set data that used to be saved in the remote storage
- * @param {JSON} key Key of the respective JSON-Array to save data
- * @param {Data} value Value of the respectiv key
- * @returns a POST method to save the data in the remote storage
- */
-async function setItem(key, value) {
-    const payload = { key, value, token: STORAGE_TOKEN };
-    return fetch(STORAGE_URL, { method: 'POST', body: JSON.stringify(payload) })
-        .then(res => res.json());
+async function getItem(key) {
+    try {
+        const response = await fetch(STORAGE_URL + key, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP-Fehler: ${response.status} - ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Fehler beim Abrufen der Daten:", error.message);
+        throw error;
+    }
 }
 
-/**
- * Get data which is saved in the remote storage
- * @param {JSON} key Key of the respective JSON-Array to save data
- * @returns data which is saved in the remote storage
- */
-async function getItem(key) {
-    const url = `${STORAGE_URL}?key=${key}&token=${STORAGE_TOKEN}`;
-    // console.log(JSON.stringify(url));
-    // debugger;
-    return fetch(url).then(res => res.json()).then(res => {
-        if (res.data) {
-            return res.data.value;
-        } throw `Could not find data with key "${key}".`;
-    });
+async function setItem(key, value = null, method = 'POST') {
+    try {
+        const options = {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+
+        if (value) {
+            options.body = JSON.stringify(value);            
+        }
+
+        const response = await fetch(STORAGE_URL + key, options);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const contentType = response.headers.get('Content-Type');
+        if (contentType && contentType.includes('application/json')) {
+            return await response.json();
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error(`Fehler bei der ${method}-Anfrage:`, error);
+        throw error;
+    }
 }

@@ -1,23 +1,10 @@
-/**
- * Initial function that gets executed after the document has loaded.
- */
 async function init() {
-    const tasksString = await getItem('tasks');
-    const correctedTasksString = tasksString.replace(/\'/g, '\"');
-    const correctedTasksJSON = correctedTasksString.replace(/False/g, 'false').replace(/True/g, 'true');
-    if (correctedTasksJSON) {
-        tasks = JSON.parse(correctedTasksJSON);
-    } else {
-        tasks = [];
-    }
-    setTaskNumbers();
-    setUrgentTasks();
-    addTaskEventListener();
+    const summary = await getItem(SUMMARY_KEY);
+    
+    highlightSection('summary-desktop', 'summary-mobile')
+    setNumbers(summary.data);
 }
 
-/**
- * To greet the logged in user in the correct form based on the current time.
- */
 function greetingUser() {
     let greetSection = document.getElementById('greeting');
     let greet = getGreeting();
@@ -25,31 +12,17 @@ function greetingUser() {
     greetSection.innerHTML = greetHTML(greet, greetUser);
 }
 
-/**
- * Greet the User who is logged in.
- * @param {String} greet The correct form of the greet based on the current time.
- * @param {String} greetUser The name of the user who should be greet.
- * @returns The HTML part of the greeting.
- */
 function greetHTML(greet, greetUser) {
     return /*html*/ `
         <span class="txt-h2">Good ${greet}, <p class="greeting-name">${greetUser}</p></span>
     `;
 }
 
-/**
- * Get the saved first name from the LocalStorage.
- * @returns The first name of the logged in user.
- */
 function getUserName() {
     let userName = localStorage.getItem('loggedInUser');
     return userName;
 }
 
-/**
- * Get the greeting by targeting the current hour.
- * @returns The correct greet based on the current time.
- */
 function getGreeting() {
     const d = new Date();
     let time = d.getHours();
@@ -64,9 +37,6 @@ function getGreeting() {
     }
 }
 
-/**
- * Sets event listener to redirect to the board when you click on a box.
- */
 function addTaskEventListener() {
     const taskBoxes = document.querySelectorAll('.box');
     taskBoxes.forEach(box => {
@@ -74,28 +44,26 @@ function addTaskEventListener() {
     });
 }
 
-/**
- * Sets the number of the display element for the corresponding task type.
- */
-function setTaskNumbers() {
+async function setNumbers(summaryData) {
     const tasksEl = document.getElementById('tasks');
     const toDoEl = document.getElementById('to-do');
     const inProgressEl = document.getElementById('in-progress');
     const awaitingEl = document.getElementById('awaiting');
+    const urgentEl = document.getElementById('urgent');
     const doneEl = document.getElementById('done');
-    const numTasks = countTasks();
+    const deadlineEl = document.getElementById('urgent-date');
 
-    tasksEl.innerHTML = tasks.length;
-    toDoEl.innerHTML = numTasks.toDo;
-    inProgressEl.innerHTML = numTasks.inProgress;
-    awaitingEl.innerHTML = numTasks.awaiting;
-    doneEl.innerHTML = numTasks.done;
+    tasksEl.innerHTML = summaryData.total_tasks;
+    toDoEl.innerHTML = summaryData.todos;
+    inProgressEl.innerHTML = summaryData.progress;
+    awaitingEl.innerHTML = summaryData.awaiting;
+    doneEl.innerHTML = summaryData.done;
+    urgentEl.innerHTML = summaryData.urgent;
+    if (summaryData.date) {
+        deadlineEl.innerHTML = summaryData.date;
+    }
 }
 
-/**
- * Counts the tasks for each task status.
- * @returns Object with counted tasks.
- */
 function countTasks() {
     const numTasks = {
         toDo: 0,
@@ -107,10 +75,6 @@ function countTasks() {
     return numTasks;
 }
 
-/**
- * Count tasks, which are saved in the respective category.
- * @param {JSON} numTasks Counter for tasks.
- */
 function setValue(numTasks) {
     tasks.forEach(task => {
         switch (task.status) {
@@ -128,39 +92,6 @@ function setValue(numTasks) {
                 break;
         }
     });
-}
-
-/**
- * Sets the number and date of the display element for the urgent tasks.
- */
-function setUrgentTasks() {
-    const urgentEl = document.getElementById('urgent');
-    const urgentDateEl = document.getElementById('urgent-date');
-    const urgentTasks = getUrgentTasks();
-
-    urgentEl.innerHTML = urgentTasks.length;
-
-    if (urgentTasks.length > 0) {
-        const upcomingDeadline = getUpcomingDeadline(urgentTasks);
-        urgentDateEl.innerHTML = formatDate(upcomingDeadline);
-    }
-}
-
-/**
- * Returns an array of the filtered urgent tasks.
- * @returns Array of urgent tasks.
- */
-function getUrgentTasks() {
-    return tasks.filter(task => task.priority === 'urgent');
-}
-
-/**
- * Sorts the urgent task by date and returns the date of the most urgent task.
- * @param {Array} urgentTasks Array of urgent tasks.
- * @returns Date string of the umpcoming deadline.
- */
-function getUpcomingDeadline(urgentTasks) {
-    return urgentTasks.sort((taskA, taskB) => taskA.date.localeCompare(taskB.date))[0].date;
 }
 
 init();

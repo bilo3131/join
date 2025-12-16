@@ -1,6 +1,10 @@
-/** Contacts, which are saved in the remote storage */
+let userCategories = [];
 let contacts = [];
-/** Users, which are saved in the remote storage */
 let users = [];
-/** Tasks, which are saved in the remote storage */
 let tasks = [];
+const TASKS_KEY = 'tasks/';
+const SUBTASKS_KEY = 'subtasks/';
+const CONTACTS_KEY = 'contacts/';
+const CATEGORY_KEY = 'category/';
+const SUMMARY_KEY = 'summary/';
+const PROFILES_KEY = 'auth/profiles/';

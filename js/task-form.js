@@ -1,15 +1,10 @@
-/**
- * Initial function that gets executed after the document is loaded.
- */
 function initTask() {
     buttonEventListener();
     renderAssignees();
     setMinTaskDate();
+    loadAddedCategories();
 }
 
-/**
- * Adds click event listeners to all listed elements
- */
 function buttonEventListener() {
     const clearTaskBtn = document.getElementById('clear-task');
     const assigneeMenu = document.getElementById('assignee');
@@ -23,158 +18,14 @@ function buttonEventListener() {
     subtaskBtn.addEventListener('click', addSubtaskToTask);
 }
 
-/**
- * Sets the min date for the datepicker.
- */
-function setMinTaskDate() {
-    const date = document.getElementById('date');
+function toggleDropdown() {
+    const assigneeBackground = document.getElementById('assignee-background');
+    const assigneeContainer = document.getElementById('assignee-container');
 
-    date.min = getCurrentFormattedDate();
+    assigneeBackground.classList.toggle('d-none');
+    assigneeContainer.classList.toggle('d-none');
 }
 
-/**
- * Return the current date in the yyyy-mm-dd format.
- * @returns Formated date yyyy-mm-dd.
- */
-function getCurrentFormattedDate() {
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth() + 1;
-    const monthTwoDigit = month < 10 ? `0${month}` : month;
-    const day = currentDate.getDate();
-    const dayTwoDigit = day < 10 ? `0${day}` : day;
-
-    return `${year}-${monthTwoDigit}-${dayTwoDigit}`;
-}
-
-/**
- * Adds and stores the new task to the database.
- */
-function addTask() {
-    const createdWithStatus = document.getElementById('add-task-form').dataset.status;
-    const id = Date.now().toString(36);
-    const titleInp = document.getElementById('title');
-    const descriptionInp = document.getElementById('description');
-    const categoryInp = document.getElementById('category');
-    const dateInp = document.getElementById('date');
-    const priorityInp = document.querySelector('input[name="priority"]:checked');
-    const priority = priorityInp != null ? priorityInp.value : 'low';
-    const assignees = [];
-    const assigneeInp = document.querySelectorAll('.assignee input[type="checkbox"]:checked');
-    assigneeInp.forEach(assignee => assignees.push(assignee.value));
-    const subtasks = getSubtasks();
-    setTasks(id, titleInp, descriptionInp, categoryInp, assignees, dateInp, priority, createdWithStatus, subtasks);
-}
-
-/**
- * Set tasks on the webpage
- */
-async function setTasks(id, titleInp, descriptionInp, categoryInp, assignees, dateInp, priority, createdWithStatus, subtasks) {
-    if (isInputValid(assignees)) {
-        const task = {
-            id: id,
-            title: titleInp.value,
-            description: descriptionInp.value,
-            category: categoryInp.value,
-            assignees: assignees,
-            date: dateInp.value,
-            priority: priority,
-            status: createdWithStatus,
-            subtasks: subtasks
-        }
-        await storeTasks(task);
-    }
-}
-
-/**
- * To check if the user want to add a new category
- */
-function checkCategory() {
-    let categories = document.getElementById('category');
-    if (categories.value == 'Add new Category') {
-        categories.value = '';
-        toggleInput();
-    }
-}
-
-/**
- * Show the inputfield and hide the selectfield to add a new category
- * Hide the inputfield and show the selectfield to select a category
- */
-function toggleInput() {
-    let inputCategory = document.getElementById('inputfield-category');
-    let categories = document.getElementById('category');
-    let newCategory = document.getElementById('new-category');
-    inputCategory.classList.toggle('d-none'); 
-    categories.classList.toggle('d-none');
-    newCategory.value = '';
-}
-
-/**
- * Add the typed categorie to the archive and go back to select a category
- */
-function addCategory() {
-    let newCategory = document.getElementById('new-category');
-    let categories = document.getElementById('category');
-    if (newCategory.value) {
-        categories.innerHTML += addNewCategoryHTML(newCategory.value);
-    }
-    toggleInput();
-}
-
-/**
- * @param {String} newCategory The value of the typed category
- * @returns The added category as an option in HTML
- */
-function addNewCategoryHTML(newCategory) {
-    return /*html*/ `
-        <option value=${newCategory}>${newCategory}</option>
-    `;
-}
-
-/**
- * Gets all subtask that have been added to the form.
- * @returns Array of subtasks.
- */
-function getSubtasks() {
-    const subtasksEl = document.querySelectorAll('label.subtask');
-    const subtaskArr = [];
-
-    subtasksEl.forEach(label => {
-        const subtaskTitle = label.innerText;
-        const isSubtaskChecked = label.children.namedItem(label.htmlFor).checked;
-        subtaskArr.push({
-            id: label.htmlFor,
-            title: subtaskTitle,
-            isChecked: isSubtaskChecked
-        });
-    })
-    return subtaskArr;
-}
-
-/**
- * Validates the user input.
- * @param {array} assignees Array of assignees.
- * @returns 
- */
-function isInputValid(assignees) {
-    const titleInp = document.getElementById('title');
-    const categoryInp = document.getElementById('category');
-    const dateInp = document.getElementById('date');
-    const assigneeCheck = document.getElementById('assignee-check');
-    const isInputValid = titleInp.checkValidity() && categoryInp.checkValidity() && dateInp.checkValidity() && assignees.length > 0;
-    assigneeCheck.checked = false;
-    if (assignees.length === 0) {
-        assigneeCheck.reportValidity();
-    } else {
-        assigneeCheck.checked = true;
-    }
-    return isInputValid;
-}
-
-/**
- * Clears the input fields of the form.
- */
 function clearInputFields() {
     const titleInp = document.getElementById('title');
     const descriptionInp = document.getElementById('description');
@@ -191,71 +42,48 @@ function clearInputFields() {
     clearPriority();
 }
 
-/**
- * Set the standart value of the priority to 'LoWw.
- */
 function clearPriority() {
     const priority = document.getElementById('low');
     priority.checked = true;
 }
 
-/**
- * Stores the task in the database and clears the input fields.
- * @param {object} task Task object.
- */
-async function storeTasks(task) {
-    tasks.push(task);
-    await setItem('tasks', tasks);
-    clearInputFields();
-    window.location.href = './board.html';
-}
-
-/**
- * Toggles the custom dropdown menu for the assignees.
- */
-function toggleDropdown() {
-    const assigneeBackground = document.getElementById('assignee-background');
-    const assigneeContainer = document.getElementById('assignee-container');
-
-    assigneeBackground.classList.toggle('d-none');
-    assigneeContainer.classList.toggle('d-none');
-}
-
-/**
- * Renders the assignees (all available contacts) into the dropdown selection.
- */
 function renderAssignees() {
     const assigneeContainer = document.getElementById('assignee-container');
 
     assigneeContainer.innerHTML = '';
     contacts.forEach(contact => {
-        assigneeContainer.innerHTML += assigneeTemp(contact);
+
+        assigneeContainer.innerHTML += assigneeTemp(contact.id, contact.firstname, contact.lastname);
     });
 }
 
-/**
- * Renders the assignees bubbles of the selected assignees.
- */
+function assigneeTemp(id, firstname, lastname) {
+    return `
+        <label for="${id}" class="assignee">${firstname} ${lastname}
+            <input type="checkbox" name="${id}" id="${id}" value="${id}" onchange="renderAssigneesBubbles()">
+            <span class="checkmark"></span>
+        </label>`;
+}
+
 function renderAssigneesBubbles() {
     const assigneeBubblesEl = document.getElementById('assignee-bubbles');
     const selectedAssignees = document.querySelectorAll('#assignee-container input[type="checkbox"]:checked');
     let assigneesHTML = '';
     assigneeBubblesEl.innerHTML = '';
+
     runThroughAssigneesBubbles(assigneeBubblesEl, selectedAssignees, assigneesHTML);
 }
 
-/**
- * Run render the assignees bubbles 
- * @returns undefined
- */
 function runThroughAssigneesBubbles(assigneeBubblesEl, selectedAssignees, assigneesHTML) {
     for (let i = 0; i < selectedAssignees.length; i++) {
-        const contact = contacts.find(contact => contact.id === selectedAssignees[i].id);
+        const contact = contacts.find(c => c.id == selectedAssignees[i].id);
+
         const firstnameChar = contact.firstname.charAt(0).toUpperCase();
         const lastnameChar = contact.lastname.charAt(0).toUpperCase();
         const initials = `${firstnameChar}${lastnameChar}`;
         const assigneeOffset = i * 12;
-        if (i == 10) {
+
+        if (i == 7) {
             assigneesHTML += assigneeHTMLTemp(`+${selectedAssignees.length - i}`, contact.color, assigneeOffset);
             assigneeBubblesEl.innerHTML = assigneesHTML;
             return;
@@ -266,14 +94,164 @@ function runThroughAssigneesBubbles(assigneeBubblesEl, selectedAssignees, assign
     }
 }
 
-/**
- * Adds a subtask to the task form.
- */
+function setMinTaskDate() {
+    const date = document.getElementById('date');
+
+    date.min = getCurrentFormattedDate();
+}
+
+function getCurrentFormattedDate() {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const monthTwoDigit = month < 10 ? `0${month}` : month;
+    const day = currentDate.getDate();
+    const dayTwoDigit = day < 10 ? `0${day}` : day;
+
+    return `${year}-${monthTwoDigit}-${dayTwoDigit}`;
+}
+
+function checkCategory() {
+    let categories = document.getElementById('category');
+    if (categories.value == 'Add new Category') {
+        categories.value = '';
+        toggleInput();
+    }
+}
+
+function toggleInput() {
+    let inputCategory = document.getElementById('inputfield-category');
+    let categories = document.getElementById('category');
+    let newCategory = document.getElementById('new-category');
+    inputCategory.classList.toggle('d-none');
+    categories.classList.toggle('d-none');
+    newCategory.value = '';
+}
+
+function addCategory() {
+    let newCategory = document.getElementById('new-category');
+
+    if (newCategory.value) {
+        saveCategory(newCategory.value);
+    }
+    toggleInput();
+}
+
+async function saveCategory(newCategory) {
+    const color = Math.floor(Math.random() * 355);
+
+    const categoryToAdd = {
+        category_name: newCategory,
+        category_color: '#' + color
+    }
+
+    await setItem(CATEGORY_KEY, categoryToAdd, 'POST');
+
+    init();
+
+}
+
+function loadAddedCategories() {
+    let categories = document.getElementById('category');
+    categories.innerHTML = `<option value="" disabled selected hidden>Select task category</option>
+                                <option value="Add new Category">Add new Category</option>`;
+    for (let i = 0; i < userCategories.length; i++) {
+        const category = userCategories[i].category_name;
+        const categoryId = userCategories[i].id
+        categories.innerHTML += addNewCategoryHTML(category, categoryId);
+    }
+}
+
+function addNewCategoryHTML(newCategory, categoryId) {
+    return /*html*/ `
+        <option id='${categoryId}'>${newCategory}</option>
+    `;
+}
+
+function addTask() {
+    const createdWithStatus = document.getElementById('add-task-form').dataset.status;
+    const titleInp = document.getElementById('title');
+    const descriptionInp = document.getElementById('description');
+    const categoryInp = document.getElementById('category').value;
+    const dateInp = document.getElementById('date');
+    const priorityInp = document.querySelector('input[name="priority"]:checked');
+    const priority = priorityInp != null ? priorityInp.value : 'low';
+    const assignees = [];
+    const assigneeInp = document.querySelectorAll('.assignee input[type="checkbox"]:checked');
+    assigneeInp.forEach(assignee => assignees.push(Number(assignee.id)));
+
+    const subtasks = getSubtasks();
+    setTasks(titleInp, descriptionInp, categoryInp, assignees, dateInp, priority, createdWithStatus, subtasks);
+}
+
+async function setTasks(titleInp, descriptionInp, categoryInp, assignees, dateInp, priority, createdWithStatus, subtasks) {
+    const categoryValue = userCategories.find(c => c.category_name == categoryInp);
+    if (isInputValid(assignees)) {
+        const task = {
+            title: titleInp.value,
+            description: descriptionInp.value,
+            category: categoryValue.id,
+            assignees: assignees,
+            date: dateInp.value,
+            priority: priority,
+            status: createdWithStatus,
+            subtasks: subtasks
+        }
+        console.log(task);
+        
+        await storeTasks(task);
+    }
+}
+
+function isInputValid(assignees) {
+    const titleInp = document.getElementById('title');
+    const categoryInp = document.getElementById('category');
+    const dateInp = document.getElementById('date');
+    const assigneeCheck = document.getElementById('assignee-check');
+    const isInputValid = titleInp.checkValidity() && categoryInp.checkValidity() && dateInp.checkValidity() && assignees.length > 0;
+    assigneeCheck.checked = false;
+    if (assignees.length == 0) {
+        assigneeCheck.reportValidity();
+    } else {
+        assigneeCheck.checked = true;
+    }
+    return isInputValid;
+}
+
+async function storeTasks(task) {
+    tasks.push(task);
+
+    await setItem(TASKS_KEY, task, 'POST');
+    clearInputFields();
+    window.location.href = './board.html';
+}
+
+function getSubtasks() {
+    const subtasksEl = document.querySelectorAll('label.subtask');
+    const subtaskArr = [];
+
+    subtasksEl.forEach(label => {
+        const subtaskTitle = label.innerText;
+        const isSubtaskChecked = label.children.namedItem(label.htmlFor).checked;
+
+        subtaskArr.push({
+            custom_id: label.htmlFor,
+            title: subtaskTitle,
+            completed: isSubtaskChecked
+        });
+    });
+
+    return subtaskArr;
+}
+
 function addSubtaskToTask() {
     const subtaskInp = document.getElementById('subtask-input');
     const subtaskContainerEl = document.getElementById('subtask-container');
     const inputValue = subtaskInp.value.trim();
     const id = Date.now().toString(36);
+ 
+    console.warn('Hier hin zurück');
+
 
     if (inputValue.length > 0) {
         subtaskContainerEl.innerHTML += subtaskEditHTMLTemp(subtaskInp.value, id);
@@ -281,85 +259,47 @@ function addSubtaskToTask() {
     }
 }
 
-/**
- * Renders the subtasks.
- * @param {object} task Task object.
- * @returns 
- */
 function renderSubtasks(task) {
     let subtasksHTML = '';
 
+
     task.subtasks.forEach(subtask => {
-        subtasksHTML += subtaskHTMLTemp(task.id, subtask.title, subtask.id, subtask.isChecked);
+        subtasksHTML += subtaskHTMLTemp(task.id, subtask.title, subtask.id, subtask.completed);
     })
 
     return subtasksHTML
 }
 
-/**
- * Deletes the subtask from the task form.
- * @param {string} id Id of the subtask.
- */
 function deleteSubtaskFromTask(id) {
+    console.log(id);
+
     const subtaskEl = document.getElementById(`subtask-item-${id}`);
 
     subtaskEl.remove();
 }
 
-/**
- * HTML template for rendering the assignee.
- * @param {Object} contact Conact that should be rendered
- * @returns HTML assignee template
- */
-function assigneeTemp(contact) {
-    return `
-        <label for="${contact.id}" class="assignee">${contact.firstname} ${contact.lastname}
-            <input type="checkbox" name="${contact.id}"id="${contact.id}" value="${contact.id}"  onchange="renderAssigneesBubbles()">
-            <span class="checkmark"></span>
-        </label>`;
-}
-
-/**
- * Return the HTML template for the assignees bubble.
- * @param {string} initials Initials of the contact.
- * @param {string} color Color for the initials bubble.
- * @param {number} offset Osset for the initials bubble.
- * @returns HTML assignee template.
- */
 function assigneeHTMLTemp(initials, color, offset) {
     return (`
         <div class="assignee-task" style="right:${offset}px; background: hsl(${color}, 100%, 30%)">${initials}</div>
     `);
 }
 
-/**
- * Returns the HTML template for the subtask.
- * @param {string} subtaskText Text of the subtask.
- * @param {string} id Id of the subtask.
- * @returns  HTML subtask template.
- */
-function subtaskHTMLTemp(taskId, subtaskText, id, isChecked = false) {
+function subtaskHTMLTemp(taskId, subtaskText, id, completed = false) {
     return (`
         <div class="d-flex subtask-item" id="subtask-item-${id}" data-id="${id}">
             <label for="${id}" class="subtask">${subtaskText}
-                <input type="checkbox" name="${id}" id="${id}" value="${id}" onchange="updateSubtasks('${taskId}', '${id}')" ${isChecked ? 'checked' : ''}>
+                <input type="checkbox" name="${id}" id="${id}" value="${id}" onchange="updateSubtasks('${taskId}', '${id}')" ${completed ? 'checked' : ''}>
                 <span class="checkmark"></span>
             </label>
         </div>
     `);
 }
 
-/**
- * Returns the HTML template for the subtask.
- * @param {string} subtaskText Text of the subtask.
- * @param {string} id Id of the subtask.
- * @returns  HTML subtask template.
- */
-function subtaskEditHTMLTemp(subtaskText, id, isChecked = false) {
+function subtaskEditHTMLTemp(subtaskText, id, completed = false) {
     return (`
         <div class="d-flex subtask-item" id="subtask-item-${id}" data-id="${id}">
             <label for="${id}" class="subtask">${subtaskText}
-                <input type="checkbox" name="${id}" id="${id}" value="${id}" ${isChecked ? 'checked' : ''}>
+                <input type="checkbox" name="${id}" id="${id}" value="${id}" ${completed ? 'checked' : ''}>
                 <span class="checkmark"></span>
             </label>
             <img src="./assets/icons/trash.svg" class="subtask-delete" onclick="deleteSubtaskFromTask('${id}')">

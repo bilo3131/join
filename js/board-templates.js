@@ -2,12 +2,6 @@
 // Templates
 // -------------------
 
-/**
- * Returns the HTML template for the board column header.
- * @param {string} title Title of the board column.
- * @param {string} id Id of the img element.
- * @returns 
- */
 function taskColHeaderTemp(title, id) {
     return (`
         <div class="task-col-header">
@@ -17,17 +11,11 @@ function taskColHeaderTemp(title, id) {
     `);
 }
 
-/**
- * Returns the HTML template for the board item.
- * @param {object} task Task object.
- * @param {string} assignees Assignee HTML template string.
- * @returns 
- */
-function taskItemHTMLTemp(task, assignees, progress) {
+function taskItemHTMLTemp(task, assignees, progress, category) {
     return (`
         <div class="task-item" data-id="${task.id}" draggable="true">
             <div class="task-top">
-            <div class="category" style="background:${getCategoryColor(task)}">${task.category}</div>
+            <div class="category" style="background:${category.category_color}">${category.category_name}</div>
             </div>
             <div>
                 <div class="task-title">${task.title}</div>
@@ -44,26 +32,13 @@ function taskItemHTMLTemp(task, assignees, progress) {
     `);
 }
 
-/**
- * Return the HTML template for the board item assignee.
- * @param {string} initials Initials of the contact.
- * @param {string} color Color for the initials bubble.
- * @param {number} offset Osset for the initials bubble.
- * @returns HTML assignee template.
- */
 function assigneeHTMLTemp(initials, color, offset) {
     return (`
         <div class="assignee-task" style="right:${offset}px; background: hsl(${color}, 100%, 30%)">${initials}</div>
     `);
 }
 
-/**
- * Returns the HTML template for the item modal.
- * @param {object} task Task object.
- * @param {string} assignees Assignee HTML template string.
- * @returns HTML item template.
- */
-function modalItemHTMLTemp(task, assignees, subtasks) {
+function modalItemHTMLTemp(task, category, assignees, subtasks = undefined) {
     let subtaskEl = '<div class="modal-subtask-container subtask-container subtask-container d-flex-col" id="subtask-item-container"></div>';
     if (subtasks) {
         subtaskEl = `
@@ -72,7 +47,7 @@ function modalItemHTMLTemp(task, assignees, subtasks) {
             </div>`;
     }
     return (`
-        <div class="modal-category" style="background:${getCategoryColor(task)}">${task.category}</div>
+        <div class="modal-category" style="background:${category.category_color}">${category.category_name}</div>
         <div>
             <div class="modal-title txt-h4">${task.title}</div>
             <div class="modal-description">${task.description}</div>
@@ -89,23 +64,17 @@ function modalItemHTMLTemp(task, assignees, subtasks) {
         ${subtaskEl}
         <div class="modal-assignee-bottom">
             <div class="modal-assignee-buttons">
-                <button class="btn btn-primary modal-button" id="task-move-up" onclick="moveTask(-1, '${task.id}')"> <img class="color-white" src="./assets/icons/dropdown_arrow.svg"> </button>
-                <button class="btn btn-primary modal-button" id="task-move-down" onclick="moveTask(+1, '${task.id}')"> <img class="color-white" src="./assets/icons/dropdown_arrow.svg"> </button>
+                <button class="btn btn-primary modal-button" id="task-move-up" onclick="moveTask(-1, ${task.id})"> <img class="color-white" src="./assets/icons/dropdown_arrow.svg"> </button>
+                <button class="btn btn-primary modal-button" id="task-move-down" onclick="moveTask(+1, ${task.id})"> <img class="color-white" src="./assets/icons/dropdown_arrow.svg"> </button>
             </div>
             <div class="modal-assignee-buttons">
-            <button class="btn btn-primary modal-button" id="modal-edit" onclick="openEditTaskModal('${task.id}')"><img src="./assets/icons/edit.svg"></button>
-            <button class="btn btn-primary modal-button" id="modal-delete" onclick="deleteTask('${task.id}')"><img src="./assets/icons/trash_white.svg"></button>
+            <button class="btn btn-primary modal-button" id="modal-edit" onclick="openEditTaskModal(${task.id})"><img src="./assets/icons/edit.svg"></button>
+            <button class="btn btn-primary modal-button" id="modal-delete" onclick="deleteTask(${task.id})"><img src="./assets/icons/trash_white.svg"></button>
             </div>
         </div>
-    `);
+        `);
 }
 
-/**
- * Returns the HTML template for the assignee dropdown.
- * @param {string} initials Initials of the contact.
- * @param {object} contact Contact object.
- * @returns HTML assignee template
- */
 function modalAssigneHTMLTemp(initials, contact) {
     return (`
         <div class="modal-assignee d-flex">
@@ -115,13 +84,6 @@ function modalAssigneHTMLTemp(initials, contact) {
     `);
 }
 
-/**
- * Returns the HTML template for the subtask progress.
- * @param {number} progress Progress of the subtasks.
- * @param {number} total Total number of subtasks.
- * @param {number} completed Number of completed subtasks.
- * @returns HTML assignee template
- */
 function subtaskProgressHTMLTemp(progress, total, completed) {
     return (`
         <div class="d-flex flex-center">

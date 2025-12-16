@@ -10,7 +10,7 @@ async function initRegister() {
  * @param {JSON} users 
  */
 async function loadUsers() {
-    users = JSON.parse(await getItem('users'));
+    users = JSON.parse(await getItem(PROFILES_KEY));
 }
 
 /**
