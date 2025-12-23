@@ -156,7 +156,7 @@ function loadAddedCategories() {
     categories.innerHTML = `<option value="" disabled selected hidden>Select task category</option>
                                 <option value="Add new Category">Add new Category</option>`;
     for (let i = 0; i < userCategories.length; i++) {
-        const category = userCategories[i].category_name;
+        const category = userCategories[i].name;
         const categoryId = userCategories[i].id
         categories.innerHTML += addNewCategoryHTML(category, categoryId);
     }
@@ -209,6 +209,8 @@ function isInputValid(assignees) {
     const dateInp = document.getElementById('date');
     const assigneeCheck = document.getElementById('assignee-check');
     const isInputValid = titleInp.checkValidity() && categoryInp.checkValidity() && dateInp.checkValidity() && assignees.length > 0;
+    console.log(isInputValid);
+    
     assigneeCheck.checked = false;
     if (assignees.length == 0) {
         assigneeCheck.reportValidity();
@@ -261,9 +263,11 @@ function addSubtaskToTask() {
 
 function renderSubtasks(task) {
     let subtasksHTML = '';
-
+    console.log(task.subtasks.title);
+     
 
     task.subtasks.forEach(subtask => {
+
         subtasksHTML += subtaskHTMLTemp(task.id, subtask.title, subtask.id, subtask.completed);
     })
 

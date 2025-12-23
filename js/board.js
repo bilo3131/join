@@ -31,17 +31,18 @@ function clearElementsInnerHTML(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl
 
 function setTaskStatus(toDoEl, inProgressEl, awaitingFeedbackEl, doneEl, renderedTasks = undefined) {
     for (let task of renderedTasks || tasks) {
-        const assignees = renderTaskAssignees(task);
+        const assignees = renderTaskAssignees(task);        
         const taskProgress = getTaskProgress(task);        
-        const category = userCategories.find(category => category.id == task.category || category.category_name == task.category);
-        switch (task.status) {
+        const category = userCategories.find(category => category.id == task.category || category.name == task.category);
+        
+        switch (task.process) {
             case 'todo':
                 toDoEl.innerHTML += taskItemHTMLTemp(task, assignees, taskProgress, category);
                 break;
-            case 'progress':
+            case 'in_progress':
                 inProgressEl.innerHTML += taskItemHTMLTemp(task, assignees, taskProgress, category);
                 break;
-            case 'awaiting':
+            case 'awaiting_feedback':
                 awaitingFeedbackEl.innerHTML += taskItemHTMLTemp(task, assignees, taskProgress, category);
                 break;
             case 'done':
@@ -67,7 +68,7 @@ function openEditTaskModal(id) {
     const modal = document.getElementById('modal');
     const taskForm = document.getElementById('add-task-form');
     const editTask = tasks.find(task => task.id == id);
-    const category = userCategories.find(c => c.id == editTask.category || c.category_name == editTask.category);
+    const category = userCategories.find(c => c.id == editTask.category || c.name == editTask.category);
     modal.close();
     uncheckAssignees();
     prefillTaskForm(editTask, category);
@@ -79,10 +80,11 @@ function openEditTaskModal(id) {
 }
 
 function moveTask(direction, id) {
-    let categoryArray = ['todo', 'progress', 'awaiting', 'done'];
+    let categoryArray = ['todo', 'in_progress', 'awaiting_feedback', 'done'];
     const task = tasks.find(task => task.id == id);
+    
     for (let i = 0; i < categoryArray.length; i++) {
-        if (categoryArray[i] == task.status) {
+        if (categoryArray[i] == task.process) {
             if (i + direction < 0) {
                 i = 4;
             } else if (i + direction >= categoryArray.length) {
@@ -95,22 +97,22 @@ function moveTask(direction, id) {
 }
 
 function moveAndSave(categoryArray, task, direction, i) {
-    task.status = categoryArray[i + direction];
+    task.process = categoryArray[i + direction];    
     setItem(TASKS_KEY + task.id + '/', task, 'PUT');
     modal.close();
     renderTaskItems();
 }
 
 async function updateProgress(item) {
-    const task = tasks.find(task => task.id == item.dataset.id);
-    task.status = item.parentElement.dataset.category;
+    const task = tasks.find(task => task.id == item.dataset.id);    
+    task.process = item.parentElement.dataset.category;    
     await setItem(TASKS_KEY + task.id + '/', task, 'PUT');
 }
 
 function getTaskProgress(task) {
-    const totalSubtasks = task.subtasks.length;
+    const totalSubtasks = task.subtasks.length;    
     const completedSubtasks = task.subtasks.filter(subtask => subtask.completed == true).length;
-    const subtaskProgress = ((completedSubtasks / totalSubtasks) * 100).toFixed(2);    
+    const subtaskProgress = ((completedSubtasks / totalSubtasks) * 100).toFixed(2);
     if (totalSubtasks === 0) { return '' }
     return subtaskProgressHTMLTemp(subtaskProgress, totalSubtasks, completedSubtasks);
 }
@@ -127,7 +129,7 @@ function deleteTask(id) {
 }
 
 function renderTaskAssignees(task) {
-    const assignees = task.assignees;
+    const assignees = task.assigned_to;      
     let assigneesHTML = '';
     for (let i = 0; i < assignees.length; i++) {
         const contact = contacts.find(contact => contact.id == assignees[i]);
@@ -189,7 +191,7 @@ function prefillTaskForm(task, category) {
     const priority = document.getElementById(`${task.priority}`);
     titleEl.value = task.title;
     descriptionEl.value = task.description;
-    categoryEl.value = category.category_name;
+    categoryEl.value = category.name;
     dateEl.value = task.date;
     priority.checked = true;
     task.assignees.forEach(assignee => {
@@ -219,7 +221,7 @@ function editTask(id) {
     const task = tasks.find(task => task.id == id); 
     if (isInputValid(assignees)) {
         updateTask(id);
-        taskForm.close();
+        taskForm.close();        
         setItem(TASKS_KEY + id + '/', task, 'PUT');
         renderTaskItems();
     }
@@ -240,7 +242,7 @@ function updateTask(id) {
 }
 
 function setUpdatedTasks(id, updatedTask, titleInp, descriptionInp, categoryInp, assignees, dateInp, priority) {
-    sentCategory = userCategories.find(category => category.category_name == categoryInp.value);
+    sentCategory = userCategories.find(category => category.name == categoryInp.value);
     updatedTask.id = id;
     updatedTask.title = titleInp.value;
     updatedTask.description = descriptionInp.value;
@@ -248,7 +250,7 @@ function setUpdatedTasks(id, updatedTask, titleInp, descriptionInp, categoryInp,
     updatedTask.assignees = assignees;
     updatedTask.date = dateInp.value;
     updatedTask.priority = priority;
-    updatedTask.status = updatedTask.status;
+    updatedTask.process = updatedTask.process;
     updatedTask.subtasks = getSubtasks();    
 }
 

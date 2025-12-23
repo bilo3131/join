@@ -2,7 +2,8 @@ async function init() {
     const summary = await getItem(SUMMARY_KEY);
     
     highlightSection('summary-desktop', 'summary-mobile')
-    setNumbers(summary.data);
+    
+    setNumbers(summary);
 }
 
 function greetingUser() {
@@ -54,13 +55,13 @@ async function setNumbers(summaryData) {
     const deadlineEl = document.getElementById('urgent-date');
 
     tasksEl.innerHTML = summaryData.total_tasks;
-    toDoEl.innerHTML = summaryData.todos;
-    inProgressEl.innerHTML = summaryData.progress;
-    awaitingEl.innerHTML = summaryData.awaiting;
-    doneEl.innerHTML = summaryData.done;
-    urgentEl.innerHTML = summaryData.urgent;
-    if (summaryData.date) {
-        deadlineEl.innerHTML = summaryData.date;
+    toDoEl.innerHTML = summaryData.tasks_to_do;
+    inProgressEl.innerHTML = summaryData.tasks_in_progress;
+    awaitingEl.innerHTML = summaryData.tasks_awaiting_feedback;
+    doneEl.innerHTML = summaryData.tasks_done;
+    urgentEl.innerHTML = summaryData.urgent_tasks;
+    if (summaryData.upcoming_deadline) {
+        deadlineEl.innerHTML = summaryData.upcoming_deadline;
     }
 }
 
@@ -77,7 +78,7 @@ function countTasks() {
 
 function setValue(numTasks) {
     tasks.forEach(task => {
-        switch (task.status) {
+        switch (task.process) {
             case 'todo':
                 numTasks.toDo += 1;
                 break;

@@ -15,7 +15,7 @@ function taskItemHTMLTemp(task, assignees, progress, category) {
     return (`
         <div class="task-item" data-id="${task.id}" draggable="true">
             <div class="task-top">
-            <div class="category" style="background:${category.category_color}">${category.category_name}</div>
+            <div class="category" style="background:${category.color}">${category.name}</div>
             </div>
             <div>
                 <div class="task-title">${task.title}</div>
@@ -47,7 +47,7 @@ function modalItemHTMLTemp(task, category, assignees, subtasks = undefined) {
             </div>`;
     }
     return (`
-        <div class="modal-category" style="background:${category.category_color}">${category.category_name}</div>
+        <div class="modal-category" style="background:${category.color}">${category.name}</div>
         <div>
             <div class="modal-title txt-h4">${task.title}</div>
             <div class="modal-description">${task.description}</div>
