@@ -1,11 +1,10 @@
 from django.db import models
-from datetime import date
 from random import randint
 from join_app.choices import ProcessChoices, PriorityChoices
 
 
 def _random_color():
-    return randint(0, 255)
+    return randint(0, 355)
 
 # Create your models here.
 
@@ -20,7 +19,7 @@ class Contact(models.Model):
         return f"{self.firstname} {self.lastname}"
     
 class Category(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     color = models.IntegerField(default=_random_color, editable=False)
     
     def __str__(self):
@@ -39,7 +38,7 @@ class Task(models.Model):
     description = models.TextField(null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     assigned_to = models.ManyToManyField(Contact, related_name='tasks')
-    due_date = models.DateField(default=date.today)
+    due_date = models.DateField()
     subtasks = models.ManyToManyField(Subtask, blank=True)    
     priority = models.CharField(max_length=10, choices=PriorityChoices.choices, default=PriorityChoices.MEDIUM)
 
