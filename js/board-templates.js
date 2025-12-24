@@ -15,7 +15,7 @@ function taskItemHTMLTemp(task, assignees, progress, category) {
     return (`
         <div class="task-item" data-id="${task.id}" draggable="true">
             <div class="task-top">
-            <div class="category" style="background:${category.color}">${category.name}</div>
+            <div class="category" style="background: hsl(${category.color}, 100%, 30%)">${category.name}</div>
             </div>
             <div>
                 <div class="task-title">${task.title}</div>

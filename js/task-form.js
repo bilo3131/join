@@ -22,8 +22,8 @@ function toggleDropdown() {
     const assigneeBackground = document.getElementById('assignee-background');
     const assigneeContainer = document.getElementById('assignee-container');
 
-    assigneeBackground.classList.toggle('d-none');
-    assigneeContainer.classList.toggle('d-none');
+    assigneeBackground.classList.toggle('d-none'); // toggle statt remove hier
+    assigneeContainer.classList.toggle('d-none');  // toggle statt remove hier
 }
 
 function clearInputFields() {
@@ -52,12 +52,12 @@ function renderAssignees() {
 
     assigneeContainer.innerHTML = '';
     contacts.forEach(contact => {
-
+        
         assigneeContainer.innerHTML += assigneeTemp(contact.id, contact.firstname, contact.lastname);
     });
 }
 
-function assigneeTemp(id, firstname, lastname) {
+function assigneeTemp(id, firstname, lastname) {    
     return `
         <label for="${id}" class="assignee">${firstname} ${lastname}
             <input type="checkbox" name="${id}" id="${id}" value="${id}" onchange="renderAssigneesBubbles()">
@@ -67,7 +67,7 @@ function assigneeTemp(id, firstname, lastname) {
 
 function renderAssigneesBubbles() {
     const assigneeBubblesEl = document.getElementById('assignee-bubbles');
-    const selectedAssignees = document.querySelectorAll('#assignee-container input[type="checkbox"]:checked');
+    const selectedAssignees = document.querySelectorAll('#assignee-container input[type="checkbox"]:checked');    
     let assigneesHTML = '';
     assigneeBubblesEl.innerHTML = '';
 
@@ -138,11 +138,8 @@ function addCategory() {
 }
 
 async function saveCategory(newCategory) {
-    const color = Math.floor(Math.random() * 355);
-
     const categoryToAdd = {
-        category_name: newCategory,
-        category_color: '#' + color
+        name: newCategory,
     }
 
     await setItem(CATEGORY_KEY, categoryToAdd, 'POST');
@@ -157,7 +154,7 @@ function loadAddedCategories() {
                                 <option value="Add new Category">Add new Category</option>`;
     for (let i = 0; i < userCategories.length; i++) {
         const category = userCategories[i].name;
-        const categoryId = userCategories[i].id
+        const categoryId = userCategories[i].id;
         categories.innerHTML += addNewCategoryHTML(category, categoryId);
     }
 }
@@ -169,35 +166,35 @@ function addNewCategoryHTML(newCategory, categoryId) {
 }
 
 function addTask() {
-    const createdWithStatus = document.getElementById('add-task-form').dataset.status;
+    const createdWithStatus = document.getElementById('add-task-form').dataset.status;   
     const titleInp = document.getElementById('title');
     const descriptionInp = document.getElementById('description');
     const categoryInp = document.getElementById('category').value;
-    const dateInp = document.getElementById('date');
+    const dateInp = document.getElementById('date');  
     const priorityInp = document.querySelector('input[name="priority"]:checked');
     const priority = priorityInp != null ? priorityInp.value : 'low';
     const assignees = [];
-    const assigneeInp = document.querySelectorAll('.assignee input[type="checkbox"]:checked');
-    assigneeInp.forEach(assignee => assignees.push(Number(assignee.id)));
+    const assigneeInp = document.querySelectorAll('#assignee-container input[type="checkbox"]:checked');
+    assigneeInp.forEach(assignee => assignees.push(Number(assignee.id)));    
 
     const subtasks = getSubtasks();
     setTasks(titleInp, descriptionInp, categoryInp, assignees, dateInp, priority, createdWithStatus, subtasks);
 }
 
 async function setTasks(titleInp, descriptionInp, categoryInp, assignees, dateInp, priority, createdWithStatus, subtasks) {
-    const categoryValue = userCategories.find(c => c.category_name == categoryInp);
-    if (isInputValid(assignees)) {
+    
+    const categoryValue = userCategories.find(c => c.name == categoryInp);    
+    if (isInputValid(assignees)) {        
         const task = {
             title: titleInp.value,
             description: descriptionInp.value,
             category: categoryValue.id,
-            assignees: assignees,
-            date: dateInp.value,
+            assigned_to: assignees,
+            due_date: dateInp.value,
             priority: priority,
             status: createdWithStatus,
             subtasks: subtasks
-        }
-        console.log(task);
+        };
         
         await storeTasks(task);
     }
@@ -209,7 +206,7 @@ function isInputValid(assignees) {
     const dateInp = document.getElementById('date');
     const assigneeCheck = document.getElementById('assignee-check');
     const isInputValid = titleInp.checkValidity() && categoryInp.checkValidity() && dateInp.checkValidity() && assignees.length > 0;
-    console.log(isInputValid);
+
     
     assigneeCheck.checked = false;
     if (assignees.length == 0) {
@@ -251,9 +248,6 @@ function addSubtaskToTask() {
     const subtaskContainerEl = document.getElementById('subtask-container');
     const inputValue = subtaskInp.value.trim();
     const id = Date.now().toString(36);
- 
-    console.warn('Hier hin zurück');
-
 
     if (inputValue.length > 0) {
         subtaskContainerEl.innerHTML += subtaskEditHTMLTemp(subtaskInp.value, id);
@@ -263,7 +257,6 @@ function addSubtaskToTask() {
 
 function renderSubtasks(task) {
     let subtasksHTML = '';
-    console.log(task.subtasks.title);
      
 
     task.subtasks.forEach(subtask => {
@@ -275,7 +268,6 @@ function renderSubtasks(task) {
 }
 
 function deleteSubtaskFromTask(id) {
-    console.log(id);
 
     const subtaskEl = document.getElementById(`subtask-item-${id}`);
 

@@ -36,7 +36,7 @@ function sortContacts() {
 }
 
 async function setContactDetails(id) {
-    const contact = await getItem(CONTACTS_KEY + id + '/')
+    const contact = await getItem(CONTACTS_KEY + id + '/')    
     const contactDetailsEl = document.getElementById('contact-details-body');
     const bubbleEl = document.getElementById('contact-details-bubble');
     const initialsEl = document.getElementById('contact-details-initials');
@@ -162,7 +162,7 @@ async function addContact() {
     const emailInp = document.getElementById('new-email');
     const phoneInp = document.getElementById('new-phone');
 
-    if (firstnameInp.checkValidity() && lastnameInp.checkValidity() && emailInp.checkValidity() && phoneInp.checkValidity()) {
+    if (firstnameInp.checkValidity() && lastnameInp.checkValidity() && emailInp.checkValidity()) {
         const contact = createContact(firstnameInp, lastnameInp, emailInp, phoneInp);
         notify('Added successfully!');
         await setItem(CONTACTS_KEY, contact);
@@ -176,7 +176,7 @@ function createContact(firstnameInp, lastnameInp, emailInp, phoneInp) {
         firstname: firstnameInp.value,
         lastname: lastnameInp.value,
         email: emailInp.value,
-        phone: phoneInp.value,
+        phone: phoneInp.value ? phoneInp.value : null,
         color: color
     }
     return contact;
