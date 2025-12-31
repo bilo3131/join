@@ -26,6 +26,7 @@ class Category(models.Model):
         return self.name
     
 class Subtask(models.Model):
+    personal_id = models.IntegerField(unique=True, primary_key=True)
     title = models.CharField(max_length=100)
     is_completed = models.BooleanField(default=False)
     
@@ -40,7 +41,7 @@ class Task(models.Model):
     assigned_to = models.ManyToManyField(Contact, related_name='tasks')
     due_date = models.DateField()
     subtasks = models.ManyToManyField(Subtask, blank=True)    
-    priority = models.CharField(max_length=10, choices=PriorityChoices.choices, default=PriorityChoices.MEDIUM)
+    priority = models.CharField(max_length=10, choices=PriorityChoices.choices, default=PriorityChoices.LOW)
 
     def __str__(self):
         return self.title
