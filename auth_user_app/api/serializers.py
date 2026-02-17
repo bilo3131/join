@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from auth_user_app.models import UserProfile
+from join_app.models import Contact
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,7 +13,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'repeated_password']
+        fields = ['username', 'email', 'password', 'repeated_password', 'first_name', 'last_name']
         extra_kwargs = {
             'password': {
                 'write_only': True
@@ -30,9 +31,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop('repeated_password')
-        password = validated_data['password']
-        username = validated_data['email']
+        password = validated_data.pop('password')
+        validated_data['username'] = validated_data['email']
         account = User.objects.create(**validated_data)
         account.set_password(password)
         account.save()
+
+        Contact.objects.create(
+            firstname=account.first_name,
+            lastname=account.last_name,
+            email=account.email,
+        )
+
         return account
