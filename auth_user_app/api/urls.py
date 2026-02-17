@@ -1,5 +1,9 @@
 from django.urls import path
+from auth_user_app.api.views import UserProfileList, UserProfileDetail, RegistrationView, LoginView
 
 urlpatterns = [
-    # path('profiles/')
+    path('profiles/', UserProfileList.as_view(), name='userprofile-list'),
+    path('profiles/<int:pk>/', UserProfileDetail.as_view(), name='userprofile-detail'),
+    path('registration/', RegistrationView.as_view(), name='registration'),
+    path('login/', LoginView.as_view(), name='login'),
 ]

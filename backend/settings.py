@@ -11,21 +11,74 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config, Csv
+import os
+import socket
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# ============================================================
+# AUTOMATISCHE PRODUCTION/DEVELOPMENT ERKENNUNG
+# ============================================================
+
+def is_production():
+    """Erkennt automatisch ob wir auf dem Production-Server laufen"""
+    # Methode 1: Umgebungsvariable prüfen (WICHTIGSTE METHODE!)
+    # Auf Server setzen: export DJANGO_ENV=production
+    django_env = os.getenv('DJANGO_ENV', '').lower()
+    if django_env == 'production':
+        return True
+    if django_env == 'development':
+        return False  # Explizit Development
+    
+    # Methode 2: Prüfe ob eine .env.production Datei existiert (Server-spezifisch)
+    if (BASE_DIR / '.env.production.active').exists():
+        return True
+    
+    # Methode 3: Hostname prüfen (nur für spezifische Server-Namen)
+    hostname = socket.gethostname().lower()
+    # Nur sehr spezifische Server-Hostnamen erkennen
+    server_hostnames = ['join.bilal-alac.de', 'bilal-alac', 'ubuntu-hetzner']
+    if hostname in server_hostnames:
+        return True
+    
+    # Standard: Development (sicherer Default)
+    return False
+
+IS_PRODUCTION = is_production()
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-de6(xv_t7le2@@z^i+h!%0*djl(j=-wig1+=1@3gjt8t4%jt-8'
+# ============================================================
+# PRODUCTION vs DEVELOPMENT SETTINGS
+# ============================================================
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+if IS_PRODUCTION:
+    # PRODUCTION EINSTELLUNGEN (automatisch auf Server)
+    DEBUG = False
+    SECRET_KEY = config('SECRET_KEY', default='r7x+%6ei(3f71%lp9(-!6*zteim-!(x(1q9mzw0j6hcdn01k=2')
+    ALLOWED_HOSTS = ['join.bilal-alac.de', 'bilal-alac.de', 'www.bilal-alac.de', '91.99.205.96']
+    CORS_ALLOWED_ORIGINS = [
+        'https://join.bilal-alac.de',
+        'https://bilal-alac.de',
+        'https://www.bilal-alac.de',
+    ]
+    print("🚀 Running in PRODUCTION mode")
+else:
+    # DEVELOPMENT EINSTELLUNGEN (automatisch auf localhost)
+    DEBUG = True
+    SECRET_KEY = 'django-insecure-de6(xv_t7le2@@z^i+h!%0*djl(j=-wig1+=1@3gjt8t4%jt-8'
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*']
+    CORS_ALLOWED_ORIGINS = [
+        'http://localhost:5500',
+        'http://127.0.0.1:5500',
+        'http://localhost:8000',
+        'http://127.0.0.1:8000',
+    ]
+    print("💻 Running in DEVELOPMENT mode")
 
 
 # Application definition
@@ -39,6 +92,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'rest_framework.authtoken',
     'join_app',
     'auth_user_app',
 ]
@@ -77,12 +131,26 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if IS_PRODUCTION:
+    # PRODUCTION: PostgreSQL
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_NAME', default='join_db'),
+            'USER': config('DB_USER', default='join_user'),
+            'PASSWORD': config('DB_PASSWORD', default=''),
+            'HOST': config('DB_HOST', default='localhost'),
+            'PORT': config('DB_PORT', default='5432'),
+        }
     }
-}
+else:
+    # DEVELOPMENT: SQLite (einfach für lokale Entwicklung)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -120,9 +188,27 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5500",
-    "http://127.0.0.1:5500"
-]
+
+
+# Zusätzliche Production-Sicherheit
+if IS_PRODUCTION:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+}

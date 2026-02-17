@@ -3,8 +3,8 @@ from rest_framework import generics
 from django.db.models import Count, Q, Min
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from join_app.models import Contact, Subtask, Task, Category
-from join_app.api.serializers import ContactSerializer, TaskSerializer, CategorySerializer, SubtaskSerializer
+from join_app.models import Contact, Task, Category
+from join_app.api.serializers import ContactSerializer, TaskSerializer, CategorySerializer
 
 
 class ContactList(generics.ListCreateAPIView):
@@ -23,20 +23,12 @@ class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
-class SubtaskList(generics.ListCreateAPIView):
-    queryset = Subtask.objects.all()
-    serializer_class = SubtaskSerializer
-
-class SubtaskDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Subtask.objects.all()
-    serializer_class = SubtaskSerializer
-
 class TaskList(generics.ListCreateAPIView):
-    queryset = Task.objects.all()
+    queryset = Task.objects.prefetch_related('subtasks').all()
     serializer_class = TaskSerializer
 
 class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Task.objects.all()
+    queryset = Task.objects.prefetch_related('subtasks').all()
     serializer_class = TaskSerializer
     
 class SummaryList(APIView):
