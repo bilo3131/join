@@ -192,7 +192,7 @@ function prefillTaskForm(task, category) {
     titleEl.value = task.title;
     descriptionEl.value = task.description;
     categoryEl.value = category.name;
-    dateEl.value = task.date;
+    dateEl.value = task.due_date;
     priority.checked = true;
     task.assignees.forEach(assignee => {
         document.getElementById(assignee).checked = true;
@@ -248,7 +248,7 @@ function setUpdatedTasks(id, updatedTask, titleInp, descriptionInp, categoryInp,
     updatedTask.description = descriptionInp.value;
     updatedTask.category = sentCategory.id;
     updatedTask.assignees = assignees;
-    updatedTask.date = dateInp.value;
+    updatedTask.due_date = dateInp.value;
     updatedTask.priority = priority;
     updatedTask.process = updatedTask.process;
     updatedTask.subtasks = getSubtasks();    

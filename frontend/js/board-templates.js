@@ -52,7 +52,7 @@ function modalItemHTMLTemp(task, category, assignees, subtasks = undefined) {
             <div class="modal-title txt-h4">${task.title}</div>
             <div class="modal-description">${task.description}</div>
         </div>
-        <div class="modal-date"><b>Due Date:&nbsp;</b>${formatDate(task.date)}</div>
+        <div class="modal-date"><b>Due Date:&nbsp;</b>${formatDate(task.due_date)}</div>
         <div class="modal-priority"><b>Priority:&nbsp;</b>
             <p  style="background: var(--${task.priority})">${task.priority}
                 <img src="./assets/icons/${task.priority}_white.svg" draggable="false">
