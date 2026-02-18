@@ -236,7 +236,7 @@ function getSubtasks() {
         subtaskArr.push({
             custom_id: label.htmlFor,
             title: subtaskTitle,
-            completed: isSubtaskChecked
+            is_completed: isSubtaskChecked
         });
     });
 

@@ -170,7 +170,7 @@ function renderEditSubtasks(task) {
     let subtaskContainerEl = document.getElementById('subtask-container');
     subtaskContainerEl.innerHTML = '';
     task.subtasks.forEach(subtask => {
-        subtaskContainerEl.innerHTML += subtaskEditHTMLTemp(subtask.title, subtask.id, subtask.completed);
+        subtaskContainerEl.innerHTML += subtaskEditHTMLTemp(subtask.title, subtask.id, subtask.is_completed);
     })
 }
 
@@ -178,7 +178,7 @@ async function updateSubtasks(taskId, subtaskId) {
     const task = tasks.find(task => task.id == taskId);
     const subtask = task.subtasks.find(subtask => subtask.id == subtaskId);
     const subtaskIsChecked = document.getElementById(subtaskId).checked;
-    subtask.completed = subtaskIsChecked;    
+    subtask.is_completed = subtaskIsChecked;    
     await setItem(TASKS_KEY + taskId + '/', task, 'PUT');
     renderTaskItems();
 }
@@ -194,7 +194,7 @@ function prefillTaskForm(task, category) {
     categoryEl.value = category.name;
     dateEl.value = task.due_date;
     priority.checked = true;
-    task.assignees.forEach(assignee => {
+    task.assigned_to.forEach(assignee => {
         document.getElementById(assignee).checked = true;
     });
 }
@@ -247,7 +247,7 @@ function setUpdatedTasks(id, updatedTask, titleInp, descriptionInp, categoryInp,
     updatedTask.title = titleInp.value;
     updatedTask.description = descriptionInp.value;
     updatedTask.category = sentCategory.id;
-    updatedTask.assignees = assignees;
+    updatedTask.assigned_to = assignees;
     updatedTask.due_date = dateInp.value;
     updatedTask.priority = priority;
     updatedTask.process = updatedTask.process;
