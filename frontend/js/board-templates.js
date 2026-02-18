@@ -47,7 +47,7 @@ function modalItemHTMLTemp(task, category, assignees, subtasks = undefined) {
             </div>`;
     }
     return (`
-        <div class="modal-category" style="background:${category.color}">${category.name}</div>
+        <div class="modal-category" style="background:hsl(${category.color}, 100%, 30%)">${category.name}</div>
         <div>
             <div class="modal-title txt-h4">${task.title}</div>
             <div class="modal-description">${task.description}</div>

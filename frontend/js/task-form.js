@@ -261,7 +261,7 @@ function renderSubtasks(task) {
 
     task.subtasks.forEach(subtask => {
 
-        subtasksHTML += subtaskHTMLTemp(task.id, subtask.title, subtask.id, subtask.completed);
+        subtasksHTML += subtaskHTMLTemp(task.id, subtask.title, subtask.id, subtask.is_completed);
     })
 
     return subtasksHTML

@@ -111,7 +111,7 @@ async function updateProgress(item) {
 
 function getTaskProgress(task) {
     const totalSubtasks = task.subtasks.length;    
-    const completedSubtasks = task.subtasks.filter(subtask => subtask.completed == true).length;
+    const completedSubtasks = task.subtasks.filter(subtask => subtask.is_completed == true).length;
     const subtaskProgress = ((completedSubtasks / totalSubtasks) * 100).toFixed(2);
     if (totalSubtasks === 0) { return '' }
     return subtaskProgressHTMLTemp(subtaskProgress, totalSubtasks, completedSubtasks);
