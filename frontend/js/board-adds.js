@@ -5,7 +5,7 @@ function addNewTaskButtonEventListener() {
 }
 
 function openAddTaskModal(status, modal) {
-    clearInputFields();
+    clearTaskInputFields();
     adjustModal('add');
     renderAssigneesBubbles();
     modal.showModal();

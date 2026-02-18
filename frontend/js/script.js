@@ -1,11 +1,12 @@
-async function init() {
-    await includeHTML();
-    logoutModalEventListener();
-}
+const navigationReady = includeHTML().then(() => logoutModalEventListener());
 
 function highlightSection(desktop, mobile) {
-    document.getElementById(desktop).classList.add('active');
-    document.getElementById(mobile).classList.add('active');
+    document.getElementById(desktop)?.classList.add('active');
+    document.getElementById(mobile)?.classList.add('active');
+}
+
+function getInitials(contact) {
+    return `${contact.firstname.charAt(0).toUpperCase()}${contact.lastname.charAt(0).toUpperCase()}`;
 }
 
 function formatDate(date) {
@@ -37,4 +38,3 @@ function logoutModalEventListener() {
     });
 }
 
-init();

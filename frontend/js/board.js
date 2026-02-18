@@ -1,11 +1,14 @@
 async function init() {
-    tasks = await getItem(TASKS_KEY);
-    contacts = await getItem(CONTACTS_KEY);
-    userCategories = await getItem(CATEGORY_KEY);
+    [tasks, contacts, userCategories] = await Promise.all([
+        getItem(TASKS_KEY),
+        getItem(CONTACTS_KEY),
+        getItem(CATEGORY_KEY),
+    ]);
     renderTaskItems();
     addSearchBarEventListener();
     addNewTaskButtonEventListener();
     addModalCloseEventListener();
+    await navigationReady;
     highlightSection('board-desktop', 'board-mobile');
     initTask();
 }
@@ -70,7 +73,7 @@ function openEditTaskModal(id) {
     const editTask = tasks.find(task => task.id == id);
     const category = userCategories.find(c => c.id == editTask.category || c.name == editTask.category);
     modal.close();
-    uncheckAssignees();
+    renderAssignees();
     prefillTaskForm(editTask, category);
     adjustModal('edit', id);
     renderAssigneesBubbles();
@@ -111,7 +114,7 @@ async function updateProgress(item) {
 
 function getTaskProgress(task) {
     const totalSubtasks = task.subtasks.length;    
-    const completedSubtasks = task.subtasks.filter(subtask => subtask.is_completed == true).length;
+    const completedSubtasks = task.subtasks.filter(subtask => subtask.completed == true).length;
     const subtaskProgress = ((completedSubtasks / totalSubtasks) * 100).toFixed(2);
     if (totalSubtasks === 0) { return '' }
     return subtaskProgressHTMLTemp(subtaskProgress, totalSubtasks, completedSubtasks);
@@ -134,9 +137,7 @@ function renderTaskAssignees(task) {
     for (let i = 0; i < assignees.length; i++) {
         const contact = contacts.find(contact => contact.id == assignees[i]);
         if (!contact) { removeAssignee(task, assignees[i]); continue }
-        const firstnameChar = contact.firstname.charAt(0).toUpperCase();
-        const lastnameChar = contact.lastname.charAt(0).toUpperCase();
-        const initials = `${firstnameChar}${lastnameChar}`;
+        const initials = getInitials(contact);
         const assigneeOffset = i * 12;
         if (i == 3) {
             assigneesHTML += assigneeHTMLTemp(`+${assignees.length - i}`, contact.color, assigneeOffset);
@@ -149,8 +150,8 @@ function renderTaskAssignees(task) {
 }
 
 async function removeAssignee(task, assignee) {
-    const assigneeIndex = task.assignees.indexOf(assignee);
-    task.assignees.splice(assigneeIndex, 1);
+    const assigneeIndex = task.assigned_to.indexOf(assignee);
+    task.assigned_to.splice(assigneeIndex, 1);
     await setItem(TASKS_KEY + task.id + '/', task, 'DELETE');
 }
 
@@ -170,7 +171,7 @@ function renderEditSubtasks(task) {
     let subtaskContainerEl = document.getElementById('subtask-container');
     subtaskContainerEl.innerHTML = '';
     task.subtasks.forEach(subtask => {
-        subtaskContainerEl.innerHTML += subtaskEditHTMLTemp(subtask.title, subtask.id, subtask.is_completed);
+        subtaskContainerEl.innerHTML += subtaskEditHTMLTemp(subtask.title, subtask.id, subtask.completed);
     })
 }
 
@@ -178,7 +179,7 @@ async function updateSubtasks(taskId, subtaskId) {
     const task = tasks.find(task => task.id == taskId);
     const subtask = task.subtasks.find(subtask => subtask.id == subtaskId);
     const subtaskIsChecked = document.getElementById(subtaskId).checked;
-    subtask.is_completed = subtaskIsChecked;    
+    subtask.completed = subtaskIsChecked;    
     await setItem(TASKS_KEY + taskId + '/', task, 'PUT');
     renderTaskItems();
 }
@@ -193,9 +194,10 @@ function prefillTaskForm(task, category) {
     descriptionEl.value = task.description;
     categoryEl.value = category.name;
     dateEl.value = task.due_date;
-    priority.checked = true;
+    if (priority) priority.checked = true;
     task.assigned_to.forEach(assignee => {
-        document.getElementById(assignee).checked = true;
+        const checkbox = document.querySelector(`#assignee-container input[value="${assignee}"]`);
+        if (checkbox) checkbox.checked = true;
     });
 }
 
@@ -250,7 +252,6 @@ function setUpdatedTasks(id, updatedTask, titleInp, descriptionInp, categoryInp,
     updatedTask.assigned_to = assignees;
     updatedTask.due_date = dateInp.value;
     updatedTask.priority = priority;
-    updatedTask.process = updatedTask.process;
     updatedTask.subtasks = getSubtasks();    
 }
 

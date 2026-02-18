@@ -1,4 +1,6 @@
-const STORAGE_URL = 'http://127.0.0.1:8000/api/';
+const STORAGE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://127.0.0.1:8000/api/'
+    : 'https://join.bilal-alac.de/api/';
 
 async function getItem(key) {
     try {

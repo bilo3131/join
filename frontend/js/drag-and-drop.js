@@ -28,11 +28,9 @@ function itemClickEvent(item) {
     
     const subtasks = renderSubtasks(task);
     let assignees = '';
-    task.assignees.forEach(assignee => {
+    task.assigned_to.forEach(assignee => {
         const contact = contacts.find(contact => contact.id == assignee);
-        const firstnameChar = contact.firstname.charAt(0).toUpperCase();
-        const lastnameChar = contact.lastname.charAt(0).toUpperCase();
-        const initials = `${firstnameChar}${lastnameChar}`;
+        const initials = getInitials(contact);
         assignees += modalAssigneHTMLTemp(initials, contact);
     });
     

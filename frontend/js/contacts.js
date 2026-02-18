@@ -1,11 +1,12 @@
 async function init() {
     contacts = await getItem(CONTACTS_KEY);
-    buttonEventListener();
+    initContactButtons();
+    await navigationReady;
     highlightSection('contacts-desktop', 'contacts-mobile');
     renderContactList();
 }
 
-function buttonEventListener() {
+function initContactButtons() {
     const modal = document.getElementById('modal');
     const newContactBtn = document.getElementById('new-contact');
     const closeModalBtn = document.getElementById('close-modal');
@@ -21,7 +22,7 @@ function renderContactList() {
     sortContacts();
     for (let contact of contacts) {
         const firstnameChar = contact.firstname.charAt(0).toUpperCase();
-        const initials = `${contact.firstname.charAt(0).toUpperCase()}${contact.lastname.charAt(0).toUpperCase()}`;
+        const initials = getInitials(contact);
         if (firstnameChar != char) {
             char = firstnameChar;
             contactList += contactSeparatorTemp(firstnameChar);
@@ -85,7 +86,7 @@ function addContactEventListener() {
     modalSubmitBtn.innerHTML = 'Create Contact';
     modalSubmitBtn.innerHTML += '<img src="./assets/icons/check_white.svg" class="btn-icon">';
     modalSubmitBtn.onclick = addContact;
-    clearInputFields();
+    clearContactInputFields();
     modal?.showModal();
 }
 
@@ -108,10 +109,10 @@ async function storeContact(id, data, text = null, method = 'POST') {
     await setItem(CONTACTS_KEY + id + '/', data, method);
     init();
     setContactDetails(id);
-    text ? notify(text) : notify();;
+    text ? notify(text) : notify();
 }
 
-function clearInputFields() {
+function clearContactInputFields() {
     const firstnameInp = document.getElementById('new-firstname');
     const lastnameInp = document.getElementById('new-lastname');
     const emailInp = document.getElementById('new-email');
@@ -146,7 +147,7 @@ async function deleteContact(id) {
 function showContactDetails(id, contactDetailsEl, bubbleEl, initialsEl, nameEl, emailEl, phoneEl, editBtn, deleteBtn, contact) {
     contactDetailsEl.style.display = 'flex';
     bubbleEl.style = `background: hsl(${contact.color}, 100%, 30%)`;
-    initialsEl.innerHTML = `${contact.firstname.charAt(0).toUpperCase()}${contact.lastname.charAt(0).toUpperCase()}`
+    initialsEl.innerHTML = getInitials(contact);
     nameEl.innerHTML = `${contact.firstname} ${contact.lastname}`;
     emailEl.innerHTML = contact.email;
     emailEl.href = `mailto:${contact.email}`;

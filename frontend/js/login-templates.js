@@ -83,14 +83,16 @@ function signUpHTML() {
                 <input pattern="^[^,]+, *[^ ,]+$" id="username" class="text-input user-icon" 
                     placeholder="Last name, First name" type="text"
                     title="Please enter your last and first name separated by a comma" required>
-                <input id="email" class="text-input mail-icon" placeholder="Email" type="email" oninput="checkRegistration()" required>
-                <input pattern=".{8,}" id="password" class="text-input lock-icon" placeholder="Password" 
+                <input id="email" class="text-input mail-icon" placeholder="Email" type="email" required>
+                <input pattern=".{8,}" id="password" class="text-input lock-icon" placeholder="Password"
                     type="password" title="Please enter a password with 8 or more characters" required>
+                <input pattern=".{8,}" id="confirmPassword" class="text-input lock-icon" placeholder="Confirm Password"
+                    type="password" title="Please confirm your password" required>
                 <button id="registerButton" class="btn btn-primary login">Sign up</button>
             </form>
         </main>
         <span class="msgBox">
-            <p id="fault" class="msg">Email already exists</p>
+            <p id="fault" class="msg">Email already exist</p>
         </span>
     `;
 }
@@ -107,14 +109,15 @@ function forgotPasswordHTML() {
             <h1 class="txt-h1">I forgot my password</h1>
             <div class="line"></div>
             <p class="text">Don't worry! We will send you an email with the instructions to<br>reset your password.</p>
-            <form method="post" class="d-flex-col gap-40">
-                <input required id="email" name="mail" class="text-input mail-icon" placeholder="Email" type="email" oninput="deleteMessageBox()" onblur="checkMail()">
+            <form onsubmit="sendPasswordResetEmail(); return false;" class="d-flex-col gap-40">
+                <input required id="email" name="mail" class="text-input mail-icon" placeholder="Email" type="email" oninput="clearError()">
                 <button id="resetButton" class="btn btn-primary login">Send me the email</button>
             </form>
         </main>
 
         <div class="msgBox">
-            <p id="fault" class="msg">Email doesn't exists</p>
+            <p id="fault" class="msg">Email doesn't exist</p>
+            <p id="success" class="msg">Email sent successfully! Check your inbox.</p>
         </div>
     `;
 }

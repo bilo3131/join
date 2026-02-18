@@ -32,22 +32,16 @@ function taskItemHTMLTemp(task, assignees, progress, category) {
     `);
 }
 
-function assigneeHTMLTemp(initials, color, offset) {
-    return (`
-        <div class="assignee-task" style="right:${offset}px; background: hsl(${color}, 100%, 30%)">${initials}</div>
-    `);
-}
-
 function modalItemHTMLTemp(task, category, assignees, subtasks = undefined) {
-    let subtaskEl = '<div class="modal-subtask-container subtask-container subtask-container d-flex-col" id="subtask-item-container"></div>';
+    let subtaskEl = '<div class="modal-subtask-container subtask-container d-flex-col" id="subtask-item-container"></div>';
     if (subtasks) {
         subtaskEl = `
             <div><b>Subtasks:</b>
-                <div class="modal-subtask-container subtask-container subtask-container d-flex-col" id="subtask-item-container">${subtasks}</div>
+                <div class="modal-subtask-container subtask-container d-flex-col" id="subtask-item-container">${subtasks}</div>
             </div>`;
     }
     return (`
-        <div class="modal-category" style="background:hsl(${category.color}, 100%, 30%)">${category.name}</div>
+        <div class="modal-category" style="background:${category.color}">${category.name}</div>
         <div>
             <div class="modal-title txt-h4">${task.title}</div>
             <div class="modal-description">${task.description}</div>
