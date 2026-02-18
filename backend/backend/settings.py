@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 from decouple import config, Csv
-import os
 import socket
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +25,7 @@ def is_production():
     """Erkennt automatisch ob wir auf dem Production-Server laufen"""
     # Methode 1: Umgebungsvariable prüfen (WICHTIGSTE METHODE!)
     # Auf Server setzen: export DJANGO_ENV=production
-    django_env = os.getenv('DJANGO_ENV', '').lower()
+    django_env = config('DJANGO_ENV', default='').lower()
     if django_env == 'production':
         return True
     if django_env == 'development':
@@ -59,7 +58,7 @@ IS_PRODUCTION = is_production()
 if IS_PRODUCTION:
     # PRODUCTION EINSTELLUNGEN (automatisch auf Server)
     DEBUG = False
-    SECRET_KEY = config('SECRET_KEY', default='r7x+%6ei(3f71%lp9(-!6*zteim-!(x(1q9mzw0j6hcdn01k=2')
+    SECRET_KEY = config('SECRET_KEY')
     ALLOWED_HOSTS = ['join.bilal-alac.de', 'bilal-alac.de', 'www.bilal-alac.de', '91.99.205.96']
     CORS_ALLOWED_ORIGINS = [
         'https://join.bilal-alac.de',
@@ -70,7 +69,7 @@ if IS_PRODUCTION:
 else:
     # DEVELOPMENT EINSTELLUNGEN (automatisch auf localhost)
     DEBUG = True
-    SECRET_KEY = 'django-insecure-de6(xv_t7le2@@z^i+h!%0*djl(j=-wig1+=1@3gjt8t4%jt-8'
+    SECRET_KEY = config('SECRET_KEY')
     ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*']
     CORS_ALLOWED_ORIGINS = [
         'http://localhost:5500',
@@ -138,7 +137,7 @@ if IS_PRODUCTION:
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': config('DB_NAME', default='join_db'),
             'USER': config('DB_USER', default='join_user'),
-            'PASSWORD': config('DB_PASSWORD', default=''),
+            'PASSWORD': config('DB_PASSWORD'),
             'HOST': config('DB_HOST', default='localhost'),
             'PORT': config('DB_PORT', default='5432'),
         }
@@ -207,12 +206,12 @@ if IS_PRODUCTION:
 # Email settings
 if IS_PRODUCTION:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = config('EMAIL_HOST', default='mail.your-server.de')
+    EMAIL_HOST = config('EMAIL_HOST')
     EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
     EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='noreply@bilal-alac.de')
-    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='y5,Q?6s.[3G~')
-    DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@bilal-alac.de')
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+    DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
     FRONTEND_URL = 'https://join.bilal-alac.de'
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

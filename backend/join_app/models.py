@@ -44,15 +44,3 @@ class Subtask(models.Model):
     
     def __str__(self):
         return self.title
-    
-class Summary(models.Model):
-    total_tasks = models.IntegerField()
-    tasks_in_progress = models.IntegerField()
-    tasks_awaiting_feedback = models.IntegerField()
-    urgent_tasks = models.IntegerField()
-    tasks_to_do = models.IntegerField()
-    tasks_done = models.IntegerField()
-    upcoming_deadline = models.DateField(null=True, blank=True)
-    
-    def __str__(self):
-        return f"Summary {self.id}"
