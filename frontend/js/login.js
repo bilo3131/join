@@ -13,17 +13,20 @@ function guestLogin() {
  * Control if the email and the password are correct and log in
  * If there ar not correct the bordercolor will be turnd red.
  */
-function login() {
-    let user = users.find(u => u.email == loginMail.value && u.password == loginPassword.value);
-    if (user) {
-        loggedInUserName = user.firstName;
-        window.location.href = `summary.html?msg=${user.firstName} ${user.lastName} logged in`;
-    } 
-    else {
+async function login() {
+    try {
+        const data = await setItem(LOGIN_KEY, {
+            username: loginMail.value,
+            password: loginPassword.value,
+        });
+        loggedInUserName = data.first_name || data.username;
+        localStorage.setItem('authToken', data.token);
+        saveData();
+        window.location.href = `summary.html?msg=${data.first_name || ''} ${data.last_name || ''} logged in`;
+    } catch (e) {
         loginPassword.style.borderColor = 'red';
+        loginMail.style.borderColor = 'red';
     }
-
-    saveData();
 }
 
 /**

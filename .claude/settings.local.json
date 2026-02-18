@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"c:/Code/1. Developerakademie/Backendkurs/1. Projekte/join\" log --oneline)"
+    ]
+  }
+}

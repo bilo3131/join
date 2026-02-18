@@ -58,10 +58,9 @@ class RegistrationView(APIView):
                 'username': saved_account.username,
                 'email': saved_account.email
             }
+            return Response(data, status=status.HTTP_201_CREATED)
         else:
-            data = serializer.errors
-            
-        return Response(data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PasswordResetView(APIView):

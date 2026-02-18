@@ -8,3 +8,5 @@ const CONTACTS_KEY = 'join/contacts/';
 const CATEGORY_KEY = 'join/categories/';
 const SUMMARY_KEY = 'join/summary/';
 const PROFILES_KEY = 'auth/profiles/';
+const REGISTRATION_KEY = 'auth/registration/';
+const LOGIN_KEY = 'auth/login/';

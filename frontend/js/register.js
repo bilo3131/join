@@ -18,16 +18,16 @@ async function loadUsers() {
  */
 async function register() {
     registerButton.disabled = true;
-    let lastName = username.value.split(',')[0];
-    let firstName = username.value.split(',')[1];
-    users.push({
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
+    let lastName = username.value.split(',')[0].trim();
+    let firstName = username.value.split(',')[1].trim();
+
+    await setItem(REGISTRATION_KEY, {
+        first_name: firstName,
+        last_name: lastName,
         email: email.value,
         password: password.value,
-    })
-
-    await setItem(PROFILES_KEY, users);
+        repeated_password: confirmPassword.value,
+    });
     sourceToLogin();
 }
 
