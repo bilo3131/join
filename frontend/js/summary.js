@@ -1,8 +1,9 @@
 async function init() {
     const summary = await getItem(SUMMARY_KEY);
-    
-    highlightSection('summary-desktop', 'summary-mobile')
-    
+
+    await navigationReady;
+    highlightSection('summary-desktop', 'summary-mobile');
+    initBoardNavigationListeners();
     setNumbers(summary);
 }
 
@@ -38,7 +39,7 @@ function getGreeting() {
     }
 }
 
-function addTaskEventListener() {
+function initBoardNavigationListeners() {
     const taskBoxes = document.querySelectorAll('.box');
     taskBoxes.forEach(box => {
         box.addEventListener('click', () => window.location.href = './board.html');
@@ -63,36 +64,6 @@ async function setNumbers(summaryData) {
     if (summaryData.upcoming_deadline) {
         deadlineEl.innerHTML = summaryData.upcoming_deadline;
     }
-}
-
-function countTasks() {
-    const numTasks = {
-        toDo: 0,
-        inProgress: 0,
-        awaiting: 0,
-        done: 0
-    }
-    setValue(numTasks);
-    return numTasks;
-}
-
-function setValue(numTasks) {
-    tasks.forEach(task => {
-        switch (task.process) {
-            case 'todo':
-                numTasks.toDo += 1;
-                break;
-            case 'progress':
-                numTasks.inProgress += 1;
-                break;
-            case 'awaiting':
-                numTasks.awaiting += 1;
-                break;
-            case 'done':
-                numTasks.done += 1;
-                break;
-        }
-    });
 }
 
 init();

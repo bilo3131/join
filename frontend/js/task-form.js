@@ -1,11 +1,11 @@
 function initTask() {
-    buttonEventListener();
+    initTaskFormButtons();
     renderAssignees();
     setMinTaskDate();
     loadAddedCategories();
 }
 
-function buttonEventListener() {
+function initTaskFormButtons() {
     const clearTaskBtn = document.getElementById('clear-task');
     const assigneeMenu = document.getElementById('assignee');
     const subtaskBtn = document.getElementById('subtask-add');
@@ -13,7 +13,7 @@ function buttonEventListener() {
     assigneeMenu.addEventListener('click', toggleDropdown);
     clearTaskBtn?.addEventListener('click', (e) => {
         e.preventDefault();
-        clearInputFields();
+        clearTaskInputFields();
     });
     subtaskBtn.addEventListener('click', addSubtaskToTask);
 }
@@ -26,7 +26,7 @@ function toggleDropdown() {
     assigneeContainer.classList.toggle('d-none');  // toggle statt remove hier
 }
 
-function clearInputFields() {
+function clearTaskInputFields() {
     const titleInp = document.getElementById('title');
     const descriptionInp = document.getElementById('description');
     const categoryInp = document.getElementById('category');
@@ -78,9 +78,7 @@ function runThroughAssigneesBubbles(assigneeBubblesEl, selectedAssignees, assign
     for (let i = 0; i < selectedAssignees.length; i++) {
         const contact = contacts.find(c => c.id == selectedAssignees[i].id);
 
-        const firstnameChar = contact.firstname.charAt(0).toUpperCase();
-        const lastnameChar = contact.lastname.charAt(0).toUpperCase();
-        const initials = `${firstnameChar}${lastnameChar}`;
+        const initials = getInitials(contact);
         const assigneeOffset = i * 12;
 
         if (i == 7) {
@@ -221,7 +219,7 @@ async function storeTasks(task) {
     tasks.push(task);
 
     await setItem(TASKS_KEY, task, 'POST');
-    clearInputFields();
+    clearTaskInputFields();
     window.location.href = './board.html';
 }
 
@@ -236,7 +234,7 @@ function getSubtasks() {
         subtaskArr.push({
             custom_id: label.htmlFor,
             title: subtaskTitle,
-            is_completed: isSubtaskChecked
+            completed: isSubtaskChecked
         });
     });
 
@@ -261,7 +259,7 @@ function renderSubtasks(task) {
 
     task.subtasks.forEach(subtask => {
 
-        subtasksHTML += subtaskHTMLTemp(task.id, subtask.title, subtask.id, subtask.is_completed);
+        subtasksHTML += subtaskHTMLTemp(task.id, subtask.title, subtask.id, subtask.completed);
     })
 
     return subtasksHTML

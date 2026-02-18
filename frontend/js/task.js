@@ -1,15 +1,18 @@
 async function init() {
-    contacts = await getItem(CONTACTS_KEY) || [];
-    tasks = await getItem(TASKS_KEY) || [];
-    userCategories = await getItem(CATEGORY_KEY) || [];
+    [contacts, tasks, userCategories] = await Promise.all([
+        getItem(CONTACTS_KEY),
+        getItem(TASKS_KEY),
+        getItem(CATEGORY_KEY),
+    ]);
+    await navigationReady;
     highlightSection('task-desktop', 'task-mobile');
     addTaskEventListener();
-    initTask();  
+    initTask();
 }
 
 function addTaskEventListener() {
-    const addTaskBtn = document.getElementById('add-task'); +
-        addTaskBtn?.addEventListener('click', addTask);
+    const addTaskBtn = document.getElementById('add-task');
+    addTaskBtn?.addEventListener('click', addTask);
 }
 
 init();

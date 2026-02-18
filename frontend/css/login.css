@@ -198,11 +198,17 @@ form {
 
 /* Registration succesfull */
 .msgBox {
+    position: relative;
     display: flex;
     justify-content: center;
 }
 
+#fault {
+    bottom: 10px;
+}
+
 .msg {
+    position: absolute;
     border-radius: var(--border-radius-md);
     background-color: var(--primary);
     padding: var(--border-radius-md);

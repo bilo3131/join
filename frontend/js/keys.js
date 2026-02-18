@@ -3,7 +3,6 @@ let contacts = [];
 let users = [];
 let tasks = [];
 const TASKS_KEY = 'join/tasks/';
-const SUBTASKS_KEY = 'join/subtasks/';
 const CONTACTS_KEY = 'join/contacts/';
 const CATEGORY_KEY = 'join/categories/';
 const SUMMARY_KEY = 'join/summary/';
