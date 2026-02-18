@@ -86,6 +86,8 @@ function signUpHTML() {
                 <input id="email" class="text-input mail-icon" placeholder="Email" type="email" oninput="checkRegistration()" required>
                 <input pattern=".{8,}" id="password" class="text-input lock-icon" placeholder="Password" 
                     type="password" title="Please enter a password with 8 or more characters" required>
+                <input pattern=".{8,}" id="confirmPassword" class="text-input lock-icon" placeholder="Confirm Password" 
+                    type="password" title="Please enter a password with 8 or more characters" required>
                 <button id="registerButton" class="btn btn-primary login">Sign up</button>
             </form>
         </main>

@@ -1,4 +1,4 @@
-const STORAGE_URL = 'http://127.0.0.1:8000/api/';
+const STORAGE_URL = 'https://join.bilal-alac.de/api/';
 
 async function getItem(key) {
     try {

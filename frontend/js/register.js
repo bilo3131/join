@@ -10,7 +10,7 @@ async function initRegister() {
  * @param {JSON} users 
  */
 async function loadUsers() {
-    users = JSON.parse(await getItem(PROFILES_KEY));
+    users = await getItem(PROFILES_KEY);
 }
 
 /**
@@ -27,7 +27,7 @@ async function register() {
         password: password.value,
     })
 
-    await setItem('users', JSON.stringify(users));
+    await setItem(PROFILES_KEY, users);
     sourceToLogin();
 }
 
