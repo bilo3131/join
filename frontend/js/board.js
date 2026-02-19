@@ -8,7 +8,7 @@ async function init() {
     addSearchBarEventListener();
     addNewTaskButtonEventListener();
     addModalCloseEventListener();
-    await navigationReady;
+    if (typeof navigationReady !== 'undefined') await navigationReady;
     highlightSection('board-desktop', 'board-mobile');
     initTask();
 }

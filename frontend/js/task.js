@@ -4,7 +4,7 @@ async function init() {
         getItem(TASKS_KEY),
         getItem(CATEGORY_KEY),
     ]);
-    await navigationReady;
+    if (typeof navigationReady !== 'undefined') await navigationReady;
     highlightSection('task-desktop', 'task-mobile');
     addTaskEventListener();
     initTask();

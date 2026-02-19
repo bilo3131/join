@@ -21,31 +21,32 @@ async function register() {
     let lastName = username.value.split(',')[0].trim();
     let firstName = username.value.split(',')[1].trim();
 
-    await setItem(REGISTRATION_KEY, {
-        first_name: firstName,
-        last_name: lastName,
-        email: email.value,
-        password: password.value,
-        repeated_password: confirmPassword.value,
-    });
-    sourceToLogin();
+    try {
+        await setItem(REGISTRATION_KEY, {
+            first_name: firstName,
+            last_name: lastName,
+            email: email.value,
+            password: password.value,
+            repeated_password: confirmPassword.value,
+        });
+        sourceToLogin();
+    } catch (e) {
+        // Backend returned 400 → email already in use or validation error
+        registerButton.disabled = false;
+        fault.classList.remove('msg-animation');
+        void fault.offsetWidth;
+        fault.classList.add('msg-animation');
+        email.style.borderColor = 'red';
+    }
 }
 
 /**
- * Function that checks if the email which is wanted to use to register is already exists
- * If it is, a message-box will be ploped out to change the email 
+ * Resets the error state when the user changes the email input
  */
 function checkRegistration() {
-    let user = users.find(u => u.email == email.value);
-    if (user) {
-        fault.classList.add('msg-animation');
-        email.style.borderColor = 'red';
-        registerButton.disabled = true;
-    } else {
-        fault.classList.remove('msg-animation');
-        email.style.borderColor = '';
-        registerButton.disabled = false;
-    }
+    fault.classList.remove('msg-animation');
+    email.style.borderColor = '';
+    registerButton.disabled = false;
 }
 
 /**

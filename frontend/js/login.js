@@ -5,12 +5,22 @@ let loggedInUserName;
  */
 function guestLogin() {
     loggedInUserName = 'Guest';
+    localStorage.setItem('loggedInUser', loggedInUserName);
     window.location.href = 'summary.html?msg=guest login';
     saveData();
 }
 
 /**
- * Control if the email and the password are correct and log in
+ * Clears login error state when user starts typing
+ */
+function clearLoginError() {
+    loginMail.style.borderColor = '';
+    loginPassword.style.borderColor = '';
+    const loginFault = document.getElementById('loginFault');
+    if (loginFault) loginFault.classList.remove('msg-animation');
+}
+
+/**
  * If there ar not correct the bordercolor will be turnd red.
  */
 async function login() {
@@ -19,13 +29,22 @@ async function login() {
             username: loginMail.value,
             password: loginPassword.value,
         });
-        loggedInUserName = data.first_name || data.username;
+        loggedInUserName = data.first_name
+            ? `${data.first_name} ${data.last_name || ''}`.trim()
+            : (data.email || data.username || 'User');
         localStorage.setItem('authToken', data.token);
+        localStorage.setItem('loggedInUser', loggedInUserName);
         saveData();
-        window.location.href = `summary.html?msg=${data.first_name || ''} ${data.last_name || ''} logged in`;
+        window.location.href = `summary.html?msg=${encodeURIComponent(loggedInUserName)} logged in`;
     } catch (e) {
         loginPassword.style.borderColor = 'red';
         loginMail.style.borderColor = 'red';
+        const loginFault = document.getElementById('loginFault');
+        if (loginFault) {
+            loginFault.classList.remove('msg-animation');
+            void loginFault.offsetWidth;
+            loginFault.classList.add('msg-animation');
+        }
     }
 }
 

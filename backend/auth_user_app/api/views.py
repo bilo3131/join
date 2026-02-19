@@ -27,21 +27,18 @@ class LoginView(ObtainAuthToken):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         
-        data = {}
         if serializer.is_valid():
             user = serializer.validated_data['user']
             token, created = Token.objects.get_or_create(user=user)
-            data = {
+            return Response({
                 'token': token.key,
                 'username': user.username,
                 'email': user.email,
                 'first_name': user.first_name,
                 'last_name': user.last_name,
-            }
+            })
         else:
-            data = serializer.errors
-            
-        return Response(data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class RegistrationView(APIView):
     permission_classes = [AllowAny]

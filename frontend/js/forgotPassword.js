@@ -42,9 +42,12 @@ async function sendPasswordResetEmail() {
         if (response.ok) {
             // Success - show success message
             email.style.borderColor = 'green';
-            success.classList.add('msg-animation');
-            fault.classList.remove('msg-animation');
-            
+            if (fault) fault.classList.remove('msg-animation');
+            if (success) {
+                success.classList.remove('msg-animation');
+                void success.offsetWidth;
+                success.classList.add('msg-animation');
+            }
             // Redirect to login after 3 seconds
             setTimeout(() => {
                 backToLogin();
@@ -52,16 +55,21 @@ async function sendPasswordResetEmail() {
         } else {
             // Error - email doesn't exist
             email.style.borderColor = 'red';
-            fault.classList.add('msg-animation');
-            success.classList.remove('msg-animation');
-            // Don't clear the input field!
+            if (success) success.classList.remove('msg-animation');
+            if (fault) {
+                fault.classList.remove('msg-animation');
+                void fault.offsetWidth; // force reflow to re-trigger animation
+                fault.classList.add('msg-animation');
+            }
         }
     } catch (error) {
         console.error('Error sending password reset email:', error);
         email.style.borderColor = 'red';
-        fault.textContent = 'An error occurred. Please try again.';
-        fault.classList.add('msg-animation');
-        success.classList.remove('msg-animation');
+        if (fault) {
+            fault.classList.remove('msg-animation');
+            void fault.offsetWidth;
+            fault.classList.add('msg-animation');
+        }
     } finally {
         // Re-enable button
         resetButton.disabled = false;

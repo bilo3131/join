@@ -1,7 +1,7 @@
 async function init() {
     contacts = await getItem(CONTACTS_KEY);
     initContactButtons();
-    await navigationReady;
+    if (typeof navigationReady !== 'undefined') await navigationReady;
     highlightSection('contacts-desktop', 'contacts-mobile');
     renderContactList();
 }

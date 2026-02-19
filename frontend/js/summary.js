@@ -1,7 +1,7 @@
 async function init() {
     const summary = await getItem(SUMMARY_KEY);
 
-    await navigationReady;
+    if (typeof navigationReady !== 'undefined') await navigationReady;
     highlightSection('summary-desktop', 'summary-mobile');
     initBoardNavigationListeners();
     setNumbers(summary);
@@ -21,8 +21,22 @@ function greetHTML(greet, greetUser) {
 }
 
 function getUserName() {
+    // Try localStorage first
     let userName = localStorage.getItem('loggedInUser');
-    return userName;
+    if (userName && userName !== 'undefined' && userName !== 'null') {
+        return userName;
+    }
+    // Fallback: extract from URL param ?msg=FirstName LastName logged in
+    const params = new URLSearchParams(window.location.search);
+    const msg = params.get('msg');
+    if (msg && msg !== 'guest login') {
+        const name = msg.replace(' logged in', '').trim();
+        if (name) {
+            localStorage.setItem('loggedInUser', name);
+            return name;
+        }
+    }
+    return localStorage.getItem('loggedInUser') || 'User';
 }
 
 function getGreeting() {
@@ -62,7 +76,8 @@ async function setNumbers(summaryData) {
     doneEl.innerHTML = summaryData.tasks_done;
     urgentEl.innerHTML = summaryData.urgent_tasks;
     if (summaryData.upcoming_deadline) {
-        deadlineEl.innerHTML = summaryData.upcoming_deadline;
+        const [year, month, day] = summaryData.upcoming_deadline.split('-');
+        deadlineEl.innerHTML = `${day}.${month}.${year}`;
     }
 }
 

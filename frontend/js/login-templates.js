@@ -43,8 +43,8 @@ function loginHTML() {
             <h1 class="txt-h1">Log in</h1>
             <div class="line"></div>
             <form onsubmit="login(); return false;" class="d-flex-col gap-40">
-                <input id="loginMail" required class="text-input mail-icon" placeholder="Email" type="email">
-                <input id="loginPassword" required class="text-input lock-icon" placeholder="Password" type="password">
+                <input id="loginMail" required class="text-input mail-icon" placeholder="Email" type="email" oninput="clearLoginError()">
+                <input id="loginPassword" required class="text-input lock-icon" placeholder="Password" type="password" oninput="clearLoginError()">
                 <div class="d-flex gap-10 check">
                     <div class="d-flex">
                         <input id="checkbox" type="checkbox" checked class="checkbox">
@@ -64,6 +64,7 @@ function loginHTML() {
         </div>
         <span class="msgBox">
             <p id="success" class="msg">Registration successful</p>
+            <p id="loginFault" class="msg">Wrong email or password</p>
         </span>
     `;
 }
@@ -92,7 +93,7 @@ function signUpHTML() {
             </form>
         </main>
         <span class="msgBox">
-            <p id="fault" class="msg">Email already exists</p>
+            <p id="fault" class="msg">Email already exist</p>
         </span>
     `;
 }
@@ -109,14 +110,15 @@ function forgotPasswordHTML() {
             <h1 class="txt-h1">I forgot my password</h1>
             <div class="line"></div>
             <p class="text">Don't worry! We will send you an email with the instructions to<br>reset your password.</p>
-            <form method="post" class="d-flex-col gap-40">
-                <input required id="email" name="mail" class="text-input mail-icon" placeholder="Email" type="email" oninput="deleteMessageBox()" onblur="checkMail()">
+            <form onsubmit="sendPasswordResetEmail(); return false;" class="d-flex-col gap-40">
+                <input required id="email" name="mail" class="text-input mail-icon" placeholder="Email" type="email" oninput="clearError()">
                 <button id="resetButton" class="btn btn-primary login">Send me the email</button>
             </form>
         </main>
 
         <div class="msgBox">
-            <p id="fault" class="msg">Email doesn't exists</p>
+            <p id="fault" class="msg">Email doesn't exist</p>
+            <p id="success" class="msg">Email sent! Check your inbox</p>
         </div>
     `;
 }
