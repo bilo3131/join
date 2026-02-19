@@ -11,7 +11,7 @@ def _random_color():
 class Contact(models.Model):
     firstname = models.CharField(max_length=50)
     lastname = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     color = models.IntegerField(default=_random_color, editable=False)
 

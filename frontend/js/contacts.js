@@ -149,10 +149,10 @@ function showContactDetails(id, contactDetailsEl, bubbleEl, initialsEl, nameEl, 
     bubbleEl.style = `background: hsl(${contact.color}, 100%, 30%)`;
     initialsEl.innerHTML = getInitials(contact);
     nameEl.innerHTML = `${contact.firstname} ${contact.lastname}`;
-    emailEl.innerHTML = contact.email;
-    emailEl.href = `mailto:${contact.email}`;
-    phoneEl.innerHTML = contact.phone;
-    phoneEl.href = `tel:${contact.phone}`;
+    emailEl.innerHTML = contact.email || '';
+    emailEl.href = contact.email ? `mailto:${contact.email}` : '';
+    phoneEl.innerHTML = contact.phone || '';
+    phoneEl.href = contact.phone ? `tel:${contact.phone}` : '';
     editBtn.onclick = () => editContactEventListener(id);
     deleteBtn.onclick = () => deleteContact(id);
 }
@@ -176,7 +176,7 @@ function createContact(firstnameInp, lastnameInp, emailInp, phoneInp) {
     const contact = {
         firstname: firstnameInp.value,
         lastname: lastnameInp.value,
-        email: emailInp.value,
+        email: emailInp.value || null,
         phone: phoneInp.value ? phoneInp.value : null,
         color: color
     }

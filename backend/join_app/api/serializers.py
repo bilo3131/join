@@ -3,7 +3,8 @@ from join_app.models import Contact, Task, Subtask, Category
 
 class ContactSerializer(serializers.ModelSerializer):
     color = serializers.IntegerField(read_only=True)
-    
+    email = serializers.EmailField(required=False, allow_null=True, allow_blank=True)
+
     class Meta:
         model = Contact
         fields = '__all__'
@@ -16,9 +17,11 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class SubtaskSerializer(serializers.ModelSerializer):
+    completed = serializers.BooleanField(source='is_completed', required=False)
+
     class Meta:
         model = Subtask
-        fields = ['id', 'title', 'is_completed']
+        fields = ['id', 'title', 'completed']
         
 class TaskSerializer(serializers.ModelSerializer):
     subtasks = SubtaskSerializer(many=True, required=False)

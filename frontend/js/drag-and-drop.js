@@ -24,12 +24,14 @@ function itemClickEvent(item) {
     const modal = document.getElementById('modal');
     const modalContent = document.getElementById('modal-content');
     const task = tasks.find(task => task.id == item.dataset.id);
-    const category = userCategories.find(category => category.id == task.category)
+    if (!task) return;
+    const category = userCategories.find(category => category.id == task.category);
     
     const subtasks = renderSubtasks(task);
     let assignees = '';
-    task.assigned_to.forEach(assignee => {
+    (task.assigned_to || []).forEach(assignee => {
         const contact = contacts.find(contact => contact.id == assignee);
+        if (!contact) return;
         const initials = getInitials(contact);
         assignees += modalAssigneHTMLTemp(initials, contact);
     });

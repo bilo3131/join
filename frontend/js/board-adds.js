@@ -16,6 +16,8 @@ function addModalCloseEventListener() {
     const modalClose = document.getElementById('modal-close');
     const modal = document.getElementById('modal');
     modalClose.addEventListener('click', () => {
+        const subtaskItemContainer = document.getElementById('subtask-item-container');
+        if (subtaskItemContainer) subtaskItemContainer.innerHTML = '';
         modal.close();
     })
 }
@@ -36,8 +38,8 @@ function addNewTaskEventListener() {
     const modalAddTask = document.getElementById('add-task-form');
     const modalTaskClose = document.getElementById('modal-task-close');
     toDoTaskBtn.addEventListener('click', () => openAddTaskModal('todo', modalAddTask));
-    inProgressTaskBtn.addEventListener('click', () => openAddTaskModal('progress', modalAddTask));
-    awaitingTaskBtn.addEventListener('click', () => openAddTaskModal('awaiting', modalAddTask));
+    inProgressTaskBtn.addEventListener('click', () => openAddTaskModal('in_progress', modalAddTask));
+    awaitingTaskBtn.addEventListener('click', () => openAddTaskModal('awaiting_feedback', modalAddTask));
     doneTaskBtn.addEventListener('click', () => openAddTaskModal('done', modalAddTask));
     modalTaskClose.addEventListener('click', () => closeAddTaskModal(modalAddTask));
 }

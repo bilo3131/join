@@ -190,7 +190,7 @@ async function setTasks(titleInp, descriptionInp, categoryInp, assignees, dateIn
             assigned_to: assignees,
             due_date: dateInp.value,
             priority: priority,
-            status: createdWithStatus,
+            process: createdWithStatus || 'todo',
             subtasks: subtasks
         };
         
@@ -224,7 +224,7 @@ async function storeTasks(task) {
 }
 
 function getSubtasks() {
-    const subtasksEl = document.querySelectorAll('label.subtask');
+    const subtasksEl = document.querySelectorAll('#subtask-container label.subtask');
     const subtaskArr = [];
 
     subtasksEl.forEach(label => {

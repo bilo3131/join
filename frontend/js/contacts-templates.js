@@ -15,7 +15,7 @@ function contactTemp({ firstname, lastname, email, color, id }, initials) {
             </div>
             <div>
                 <h5 class="contact-full-name txt-h5">${firstname} ${lastname}</h5>
-                <p class="contact-email">${email}</p>
+                <p class="contact-email">${email || ''}</p>
             </div>
         </div>
     `);

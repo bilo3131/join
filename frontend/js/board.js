@@ -122,10 +122,12 @@ function getTaskProgress(task) {
 
 function deleteTask(id) {
     const modal = document.getElementById('modal');
+    const subtaskItemContainer = document.getElementById('subtask-item-container');
     const delTask = tasks.find(task => task.id == id);
     const delTaskIndex = tasks.indexOf(delTask);
     tasks.splice(delTaskIndex, 1);
     setItem(TASKS_KEY + id + '/', null, 'DELETE');
+    if (subtaskItemContainer) subtaskItemContainer.innerHTML = '';
     renderTaskItems();
     notify('Successfully deleted!');
     modal.close();
@@ -152,7 +154,7 @@ function renderTaskAssignees(task) {
 async function removeAssignee(task, assignee) {
     const assigneeIndex = task.assigned_to.indexOf(assignee);
     task.assigned_to.splice(assigneeIndex, 1);
-    await setItem(TASKS_KEY + task.id + '/', task, 'DELETE');
+    await setItem(TASKS_KEY + task.id + '/', task, 'PUT');
 }
 
 function uncheckAssignees() {
